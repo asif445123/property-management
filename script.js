@@ -6,25 +6,56 @@ let currentOTP = null;
 
 function sendOTP() {
     currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
-    alert("Aapka naya Login OTP hai: " + currentOTP);
+    
+    Swal.fire({
+        html: '<div class="urdu-font">آپ کا پاس ورڈ ہے: <br><b style="font-size:24px">' + currentOTP + '</b></div>',
+        confirmButtonText: 'ٹھیک ہے',
+        customClass: {
+            confirmButton: 'urdu-font'
+        }
+    });
 }
 
 function checkLogin() {
     if (currentOTP === null) {
-        alert("Pehle 'Get OTP' button par click karein!");
+        Swal.fire({
+            html: '<div class="urdu-font">پہلے "پاس ورڈ حاصل کریں"اوپر کے بٹن پر کلک کریں!</div>',
+            icon: 'warning',
+            confirmButtonText: 'ٹھیک ہے',
+            customClass: {
+                confirmButton: 'urdu-font'
+            }
+        });
         return;
     }
+
     if (document.getElementById('passCode').value === currentOTP) {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        updateMazdoorTable();
-        updateMalikTable();
-        updateKharchaTable();
-        updateSummary();
-        document.getElementById('passCode').value = '';
-        currentOTP = null;
-    } else { 
-        alert("Galat OTP! Sahi OTP darj karein."); 
+        Swal.fire({
+            html: '<div class="urdu-font">لاگ اِن کامیاب ہو گیا!</div>',
+            icon: 'success',
+            confirmButtonText: 'ٹھیک ہے',
+            customClass: {
+                confirmButton: 'urdu-font'
+            }
+        }).then(() => {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            updateMazdoorTable();
+            updateMalikTable();
+            updateKharchaTable();
+            updateSummary();
+            document.getElementById('passCode').value = '';
+            currentOTP = null;
+        });
+    } else {
+        Swal.fire({
+            html: '<div class="urdu-font">غلط نمبر ہے! دوبارہ کوشش کریں</div>',
+            icon: 'error',
+            confirmButtonText: 'ٹھیک ہے',
+            customClass: {
+                confirmButton: 'urdu-font'
+            }
+        });
     }
 }
 
@@ -94,10 +125,10 @@ function updateMazdoorTable() {
             <td>${l.kharcha}</td>
             <td style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight:bold">${baqaya}</td>
             <td>
-                <button class="btn-action" onclick="markAtt(${l.id})" title="Hazri Lagayein">Hazri</button>
-                <button class="btn-edit" onclick="addKharcha(${l.id})" style="background: #3498db;">Kharcha</button>
-                <button class="btn-edit" onclick="editLabor(${l.id})">Edit</button>
-                <button class="btn-danger" onclick="deleteLabor(${l.id})">Del</button>
+                <button class="btn-action" onclick="markAtt(${l.id})"style="background: #2ecc71;" title="Hazri Lagayein">حاضری</button>
+                <button class="btn-edit" onclick="addKharcha(${l.id})" style="background: #3498db;">کتنا خرچہ دیا</button>
+                <button class="btn-edit" onclick="editLabor(${l.id})">کوئی تبدیلی</button>
+                <button class="btn-danger" onclick="deleteLabor(${l.id})">ختم کیا</button>
             </td>
         </tr>
     `;

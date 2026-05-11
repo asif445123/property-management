@@ -231,4 +231,11 @@ button:active {
         box-sizing: border-box;
         margin-top: 5px;
     }
+
+        .urdu-font {
+        font-family: 'Noto Nastaliq Urdu', !important;
+        direction: rtl;
+        line-height: 2;
+    }
+
 }
