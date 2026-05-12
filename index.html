@@ -82,6 +82,18 @@
                         <p style="font-size: 1.1em; font-weight: bold; margin: 5px 0 0; color: #e74c3c;"
                             id="mTotalBaqaya">0</p>
                     </div>
+                    <div
+                        style="flex:1; min-width: 120px; background: #e8f5e9; padding: 10px; border-radius: 8px; border-left: 5px solid #2980b9;">
+                        <h3 style="margin: 0; font-size: 0.9em; color: #2c3e50;">پچھلے 7 دن میں اجرت</h3>
+                        <p style="font-size: 1.1em; font-weight: bold; margin: 5px 0 0; color: #2980b9;"
+                            id="mWeekWages">0</p>
+                    </div>
+                    <div
+                        style="flex:1; min-width: 120px; background: #fff3e0; padding: 10px; border-radius: 8px; border-left: 5px solid #d35400;">
+                        <h3 style="margin: 0; font-size: 0.9em; color: #2c3e50;">پچھلے 7 دن کا خرچہ</h3>
+                        <p style="font-size: 1.1em; font-weight: bold; margin: 5px 0 0; color: #d35400;"
+                            id="mWeekExpenses">0</p>
+                    </div>
                 </div>
 
                 <div class="search-box">
@@ -93,7 +105,7 @@
                     <input type="text" id="mName" placeholder="مزدور کا نام">
                     <input type="number" id="mRate" placeholder="دیہاڑی">
                     <button class="btn-add" onclick="addLabor()">+ مزدور شامل کریں</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="window.print()">📄 پی ڈی ایف نکالیں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
 
                 <div class="table-container">
@@ -104,6 +116,7 @@
                                 <th>دیہاڑی</th>
                                 <th>حاضری</th>
                                 <th>آخری حاضری</th>
+                                <th>آخری خرچہ</th>
                                 <th>خرچہ</th>
                                 <th>بقایا</th>
                                 <th>ایکشن</th>
@@ -118,7 +131,7 @@
                 <div class="form-box">
                     <input type="text" id="ownerName" placeholder="مالک یا سائٹ کا نام">
                     <button class="btn-add" onclick="addOwner()">+ نئی سائٹ</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="window.print()">📄 پی ڈی ایف نکالیں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
                 <div class="table-container">
                     <table>
@@ -142,7 +155,7 @@
                     <input type="number" id="kAmount" placeholder="کتنے کا؟">
                     <input type="date" id="kDate" title="کونسی تاریخ تھی؟">
                     <button class="btn-add" onclick="addExpense()">+ خرچہ شامل کریں</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="window.print()">📄 پی ڈی ایف نکالیں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
                 <div class="table-container">
                     <table>

@@ -2,7 +2,7 @@ let labors = JSON.parse(localStorage.getItem('thekedar_labors')) || [];
 let owners = JSON.parse(localStorage.getItem('thekedar_owners')) || [];
 let expenses = JSON.parse(localStorage.getItem('thekedar_expenses')) || [];
 
-labors = labors.map(l => ({ attendance: [], ...l }));
+labors = labors.map(l => ({ attendance: l.attendance || [], expenses: l.expenses || [], ...l }));
 
 let currentOTP = null;
 
@@ -102,10 +102,30 @@ function addLabor() {
     const name = document.getElementById('mName').value;
     const rate = document.getElementById('mRate').value;
     if (!name || !rate) return showToast("تفصیل درج کریں", 'error');
-    labors.push({ id: Date.now(), name, rate: parseFloat(rate), att: 0, kharcha: 0, attendance: [] });
+    labors.push({ id: Date.now(), name, rate: parseFloat(rate), att: 0, kharcha: 0, attendance: [], expenses: [] });
     saveData();
     document.getElementById('mName').value = '';
     document.getElementById('mRate').value = '';
+}
+
+function exportSectionToPDF(element, fileName) {
+    const opt = {
+        margin: 0.5,
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+function exportCurrentSectionPDF() {
+    let sectionId = 'mazdoorSection';
+    if (document.getElementById('btnMalik').classList.contains('active')) sectionId = 'malikSection';
+    if (document.getElementById('btnKharcha').classList.contains('active')) sectionId = 'kharchaSection';
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    exportSectionToPDF(section, `${sectionId}.pdf`);
 }
 
 function updateMazdoorTable() {
@@ -120,7 +140,9 @@ function updateMazdoorTable() {
     labors.filter(l => l.name.toLowerCase().includes(searchTerm)).forEach(l => {
         const baqaya = (l.rate * l.att) - l.kharcha;
         const last = l.attendance.length ? l.attendance[l.attendance.length - 1] : null;
+        const lastExpense = l.expenses.length ? l.expenses[l.expenses.length - 1] : null;
         const lastAttendanceText = last ? `${last.date} (${last.day})` : 'N/A';
+        const lastExpenseText = lastExpense ? `${lastExpense.date} (${lastExpense.day})` : 'N/A';
         
         totalUjrat += (l.rate * l.att);
         totalPaid += l.kharcha;
@@ -132,12 +154,14 @@ function updateMazdoorTable() {
             <td>${l.rate}</td>
             <td>${l.att}</td>
             <td>${lastAttendanceText}</td>
+            <td>${lastExpenseText}</td>
             <td>${l.kharcha}</td>
             <td style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight:bold">${baqaya}</td>
             <td>
                 <button class="btn-action" onclick="markAtt(${l.id})" title="حاضری لگائیں">حاضری</button>
                 <button class="btn-action" onclick="showAttendanceHistory(${l.id})" style="background: #8e44ad;">حاضری دیکھیں</button>
-                <button class="btn-edit" onclick="addKharcha(${l.id})" style="background: #3498db;">خرچہ</button>
+                <button class="btn-action" onclick="addLaborExpense(${l.id})" style="background: #27ae60;">صارف خرچہ</button>
+                <button class="btn-action" onclick="showLaborExpenseHistory(${l.id})" style="background: #16a085;">خرچہ دیکھیں</button>
                 <button class="btn-edit" onclick="editLabor(${l.id})">ترمیم</button>
                 <button class="btn-danger" onclick="deleteLabor(${l.id})">ڈیلیٹ</button>
             </td>
@@ -150,6 +174,32 @@ function updateMazdoorTable() {
         document.getElementById('mTotalPaid').innerText = totalPaid.toLocaleString();
         document.getElementById('mTotalBaqaya').innerText = totalBaqaya.toLocaleString();
     }
+    const weekly = getLaborWeeklyTotals();
+    if (document.getElementById('mWeekWages')) {
+        document.getElementById('mWeekWages').innerText = weekly.wages.toLocaleString();
+    }
+    if (document.getElementById('mWeekExpenses')) {
+        document.getElementById('mWeekExpenses').innerText = weekly.expenses.toLocaleString();
+    }
+}
+
+function getLaborWeeklyTotals() {
+    const today = new Date();
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    let wages = 0;
+    let expensesTotal = 0;
+    labors.forEach(l => {
+        l.attendance.forEach(att => {
+            const d = new Date(att.date);
+            if (d >= weekAgo && d <= today) wages += l.rate;
+        });
+        l.expenses.forEach(exp => {
+            const d = new Date(exp.date);
+            if (d >= weekAgo && d <= today) expensesTotal += exp.amount;
+        });
+    });
+    return { wages, expenses: expensesTotal };
 }
 
 function getDayName(dateString) {
@@ -176,6 +226,33 @@ function showAttendanceHistory(id) {
         : '<p>کسی بھی تاریخ پر حاضری موجود نہیں ہے۔</p>';
     Swal.fire({
         title: `حاضری کی تفصیل: ${l.name}`,
+        html: historyHtml,
+        confirmButtonText: 'ٹھیک ہے',
+        customClass: { popup: 'swal2-popup' }
+    });
+}
+
+async function addLaborExpense(id) {
+    const today = new Date().toISOString().split('T')[0];
+    const dateVal = await showPrompt("خرچہ کی تاریخ منتخب کریں", 'date', today, 'تاریخ منتخب کریں');
+    if (dateVal === null || dateVal === '') return;
+    const amount = await showPrompt("کتنا خرچہ ہوا؟", 'number', '', 'رقم درج کریں');
+    if (amount === null || amount === '' || isNaN(amount)) return;
+    const note = await showPrompt("خرچہ کس لئے ہے؟", 'text', '', 'تفصیل درج کریں');
+    const l = labors.find(x => x.id === id);
+    const dayName = getDayName(dateVal);
+    l.expenses.push({ date: dateVal, day: dayName, amount: parseFloat(amount), note: note || 'N/A' });
+    l.kharcha += parseFloat(amount);
+    saveData();
+}
+
+function showLaborExpenseHistory(id) {
+    const l = labors.find(x => x.id === id);
+    const historyHtml = l.expenses.length
+        ? `<ul style="text-align:right; padding-right:0;">${l.expenses.map(e => `<li>${e.date} - ${e.day}: ${e.amount} (${e.note})</li>`).join('')}</ul>`
+        : '<p>کسی بھی تاریخ پر خرچہ موجود نہیں ہے۔</p>';
+    Swal.fire({
+        title: `خرچہ کی تفصیل: ${l.name}`,
         html: historyHtml,
         confirmButtonText: 'ٹھیک ہے',
         customClass: { popup: 'swal2-popup' }
