@@ -105,14 +105,17 @@
                     <input type="text" id="mName" placeholder="مزدور کا نام">
                     <input type="number" id="mRate" placeholder="دیہاڑی">
                     <input type="tel" id="mMobile" placeholder="موبائل نمبر">
+                    <input id="mSite" placeholder="سائٹ کا نام">
                     <button class="btn-add" onclick="addLabor()">+ مزدور شامل کریں</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;"
+                        onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
 
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
+                                <th>سائٹ</th>
                                 <th>نام</th>
                                 <th>دیہاڑی</th>
                                 <th>حاضری</th>
@@ -130,16 +133,24 @@
 
             <div id="malikSection" style="display:none;">
                 <div class="form-box">
-                    <input type="text" id="ownerName" placeholder="مالک یا سائٹ کا نام">
+                    <input type="text" id="ownerName" placeholeد="malik">
+                    <input type="number" id="ownerRate" placeholder="kam ka rate">
+                    <input type="number" id="ownerBalance" placeholder="kam ka name">
+                    <input type=" text" id="ownerDetail" placeholder="تفصیل">
+                    <input type="text" id="ownerMobile" placeholder="موبائل نمبر">
                     <button class="btn-add" onclick="addOwner()">+ نئی سائٹ</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;"
+                        onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>مالک/سائٹ کا نام</th>
-                                <th>کل رقم</th>
+                                <th>mobile number</th>
+                                <th>kam ka name</th>
+                                <th>kam ka rate</th>
+                                <th>malik ka name</th>
+                                <th>kam ka total rashi</th>
                                 <th>تفصیل</th>
                                 <th>ایکشن</th>
                             </tr>
@@ -156,7 +167,8 @@
                     <input type="number" id="kAmount" placeholder="کتنے کا؟">
                     <input type="date" id="kDate" title="کونسی تاریخ تھی؟">
                     <button class="btn-add" onclick="addExpense()">+ خرچہ شامل کریں</button>
-                    <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
+                    <button class="btn-action print-btn" style="background-color: #8e44ad;"
+                        onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
                 <div class="table-container">
                     <table>
@@ -180,4 +192,5 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

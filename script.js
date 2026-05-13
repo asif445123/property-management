@@ -69,7 +69,7 @@ function checkLogin() {
 function updateSummary() {
     let totalAya = 0;
     owners.forEach(o => totalAya += o.received);
-    
+
     let totalKharcha = 0;
     expenses.forEach(e => totalKharcha += e.amount);
     labors.forEach(l => totalKharcha += l.kharcha);
@@ -145,7 +145,7 @@ function updateMazdoorTable() {
         const lastExpense = l.expenses.length ? l.expenses[l.expenses.length - 1] : null;
         const lastAttendanceText = last ? `${last.date} (${last.day})` : 'N/A';
         const lastExpenseText = lastExpense ? `${lastExpense.date} (${lastExpense.day})` : 'N/A';
-        
+
         totalUjrat += (l.rate * l.att);
         totalPaid += l.kharcha;
         totalBaqaya += baqaya;
@@ -303,7 +303,7 @@ function showLaborProfile(id) {
         title: `${l.name} کا مکمل ریکارڈ`,
         html: profileHtml,
         confirmButtonText: 'بند کریں',
-        didOpen: function(modal) {
+        didOpen: function (modal) {
             if (whatsappBtn) {
                 const container = modal.querySelector('.swal2-actions');
                 container.insertAdjacentHTML('beforeend', whatsappBtn);
