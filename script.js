@@ -347,14 +347,16 @@ async function deleteLabor(id) {
 // Malik Functions
 function addOwner() {
     const name = document.getElementById('ownerName').value;
+    const amount = document.getElementById('ownerAmount').value;
     if (!name) return showToast("نام لکھیں", 'error');
-    owners.push({ id: Date.now(), name, received: 0, history: [] });
+    owners.push({ id: Date.now(), name, received: parseFloat(amount) || 0, history: [] });
     saveData();
     document.getElementById('ownerName').value = '';
 }
 
 function updateMalikTable() {
     const list = document.getElementById('malikList');
+
     list.innerHTML = '';
     owners.forEach(o => {
         let histHtml = o.history.map(h => `<div class="history-text">${h.date}: ${h.amount} (${h.from})</div>`).join('');

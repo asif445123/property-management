@@ -130,7 +130,11 @@
 
             <div id="malikSection" style="display:none;">
                 <div class="form-box">
-                    <input type="text" id="ownerName" placeholder="مالک یا سائٹ کا نام">
+                    <input type="text" id="ownerName" placeholder="سائٹ کا نام">
+                    <input type="number" id="ownerAmount" placeholder="کل رقم">
+                    <input type="text" id="ownerDesc" placeholder="تفصیل">
+                    <input type="date" id="ownerDate" title="تاریخ">
+                    <input type="text" id="ownerSearch" placeholder=" مالک " onkeyup="updateMalikTable()">
                     <button class="btn-add" onclick="addOwner()">+ نئی سائٹ</button>
                     <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
@@ -138,9 +142,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>مالک/سائٹ کا نام</th>
+                                <th>"سائٹ کا نام</th>
+                                <th>مالک/</th>
                                 <th>کل رقم</th>
-                                <th>تفصیل</th>
+                                <th>baki</th>
                                 <th>ایکشن</th>
                             </tr>
                         </thead>
