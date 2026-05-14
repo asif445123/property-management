@@ -21,14 +21,9 @@
             <input type="password" id="passCode" placeholder="او ٹی پی درج کریں"
                 style="width:80%; margin-bottom: 10px; text-align: center; padding: 10px;"
                 onkeydown="if(event.key==='Enter') checkLogin()">
-<<<<<<< HEAD
             <button class="btn-edit"
                 style="width: 100%; margin-bottom: 10px; background-color: #f39c12; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;"
                 onclick="sendOTP()">او ٹی پی حاصل کریں</button>
-=======
-            <button class="btn-add" style="width: 100%; margin-bottom: 10px; padding: 10px;" onclick="sendOTP()">او ٹی
-                پی حاصل کریں</button>
->>>>>>> 145078cdce583f89522a7379a6004f8da2e13791
             <button class="btn-add" style="width: 100%; padding: 10px;" onclick="checkLogin()">لاگ ان کریں</button>
             <p style="font-size: 0.8em; color: #888; margin-top: 15px;">بنایا گیا: <b>ارسلان</b></p>
         </div>
@@ -106,7 +101,6 @@
                         onkeyup="updateMazdoorTable()">
                 </div>
 
-
                 <div class="form-box">
                     <input type="text" id="mName" placeholder="مزدور کا نام">
                     <input type="number" id="mRate" placeholder="دیہاڑی">
@@ -177,135 +171,13 @@
                         </thead>
                         <tbody id="kharchaList"></tbody>
                     </table>
-
-                    <div class="form-box">
-                        <input type="text" id="mName" placeholder="مزدور کا نام">
-                        <input type="number" id="mRate" placeholder="دیہاڑی">
-                        <input type="tel" id="mMobile" placeholder="موبائل نمبر">
-                        <input id="mSite" placeholder="سائٹ کا نام">
-                        <button class="btn-add" onclick="addLabor()">+ مزدور شامل کریں</button>
-                        <button class="btn-action print-btn" style="background-color: #8e44ad;"
-                            onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
-                    </div>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>سائٹ</th>
-                                    <th>نام</th>
-                                    <th>دیہاڑی</th>
-                                    <th>حاضری</th>
-                                    <th>آخری حاضری</th>
-                                    <th>آخری خرچہ</th>
-                                    <th>خرچہ</th>
-                                    <th>بقایا</th>
-                                    <th>ایکشن</th>
-                                </tr>
-                            </thead>
-                            <tbody id="mazdoorList"></tbody>
-                        </table>
-                    </div>
                 </div>
-
-                <div id="malikSection" style="display:none;">
-                    <div class="form-box">
-                        <input type="text" id="ownerName" placeholeد="malik">
-                        <input type="number" id="ownerRate" placeholder="kam ka rate">
-                        <input type="number" id="ownerBalance" placeholder="kam ka name">
-                        <input type=" text" id="ownerDetail" placeholder="تفصیل">
-                        <input type="text" id="ownerMobile" placeholder="موبائل نمبر">
-                        <button class="btn-add" onclick="addOwner()">+ نئی سائٹ</button>
-                        <button class="btn-action print-btn" style="background-color: #8e44ad;"
-                            onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>mobile number</th>
-                                    <th>kam ka name</th>
-                                    <th>kam ka rate</th>
-                                    <th>malik ka name</th>
-                                    <th>kam ka total rashi</th>
-                                    <th>تفصیل</th>
-                                    <th>ایکشن</th>
-                                </tr>
-                            </thead>
-                            <tbody id="malikList"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="kharchaSection" style="display:none;">
-                    <div class="form-box">
-                        <input type="text" id="kName" placeholder="کیا لایا؟">
-                        <input type="text" id="kLocation" placeholder="کہاں خرچہ ہوا؟">
-                        <input type="number" id="kAmount" placeholder="کتنے کا؟">
-                        <input type="date" id="kDate" title="کونسی تاریخ تھی؟">
-                        <button class="btn-add" onclick="addExpense()">+ خرچہ شامل کریں</button>
-                        <button class="btn-action print-btn" style="background-color: #8e44ad;"
-                            onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
-                    </div>
-                </div>
-
-                <div id="supplierSection">
-                    <div class="section-card">
-                        <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">سامان کی رجسٹری</h2>
-                        <div class="summary-cards"
-                            style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                            <div
-                                style="flex:1; min-width: 120px; background: #f3e5f5; padding: 10px; border-radius: 8px; border-left: 5px solid #9c27b0;">
-                                <h3 style="margin: 0; font-size: 0.9em; color: #2c3e50;">کل سامان</h3>
-                                <p style="font-size: 1.1em; font-weight: bold; margin: 5px 0 0; color: #9c27b0;"
-                                    id="supplierTotalItems">0</p>
-                            </div>
-                            <div
-                                style="flex:1; min-width: 120px; background: #fff3e0; padding: 10px; border-radius: 8px; border-left: 5px solid #ff9800;">
-                                <h3 style="margin: 0; font-size: 0.9em; color: #2c3e50;">کل رقم</h3>
-                                <p style="font-size: 1.1em; font-weight: bold; margin: 5px 0 0; color: #ff9800;"
-                                    id="supplierTotalAmount">0</p>
-                            </div>
-                        </div>
-
-                        <div class="search-box">
-                            <input type="text" id="supplierSearch" placeholder="🔍 سامان یا نام تلاش کریں..."
-                                onkeyup="updateSupplierTable()">
-                        </div>
-
-                        <div class="form-box">
-                            <input type="text" id="supplierName" placeholder="سپلائی کار کا نام (کس نے دیا)">
-                            <input type="text" id="supplierItem" placeholder="سامان کی تفصیل (کیا دیا)">
-                            <input type="text" id="supplierRecipient" placeholder="کس نے وصول کیا (مزدور/سائٹ)">
-                            <input type="number" id="supplierAmount" placeholder="رقم یا مقدار">
-                            <button class="btn-add" onclick="addSupplierEntry()">+ سامان شامل کریں</button>
-                            <button class="btn-add print-btn" onclick="exportSupplierSectionPDF()">📄 PDF ڈاؤن لوڈ
-                                کریں</button>
-                        </div>
-
-                        <div class="table-container">
-                            <table class="compact-table">
-                                <thead>
-                                    <tr>
-                                        <th>تاریخ</th>
-                                        <th>کس نے دیا</th>
-                                        <th>کیا دیا</th>
-                                        <th>کس نے وصول کیا</th>
-                                        <th>رقم</th>
-                                        <th>ایکشن</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="supplierList"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
 </body>
-
 </html>

@@ -1,292 +1,269 @@
 :root {
-    --primary: #1e293b;
-    --secondary: #22c55e;
-    --accent: #3b82f6;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --light: #f1f5f9;
-    --white: #ffffff;
-    --dark: #0f172a;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    --primary: #2c3e50;
+    --secondary: #27ae60;
+    --accent: #3498db;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --light: #f4f7f6;
 }
 
 body {
-    font-family: 'Noto Nastaliq Urdu', serif;
-    background: linear-gradient(to bottom right, #eef2ff, #f8fafc);
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--light);
+    margin: 0;
     color: #333;
-    overflow-x: hidden;
 }
 
-/* LOGIN PAGE */
-
 #loginPage {
+    font-family: 'Noto Nastaliq Urdu';
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #1e293b, #334155);
-    padding: 20px;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--primary), #1a252f);
+    padding: 15px;
 }
 
 .login-card {
+    font-family: 'Noto Nastaliq Urdu';
     background: white;
-    padding: 35px;
-    border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    width: 100%;
-    max-width: 420px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     text-align: center;
-}
-
-/* DASHBOARD */
-
-#dashboard {
-    display: none;
-    padding: 15px;
     width: 100%;
-    animation: fadeIn 0.5s ease;
+    max-width: 350px;
 }
-
-.container {
-    width: 100%;
-    max-width: 100%;
-    margin: auto;
-}
-
-/* HEADER */
-
-.header {
-    background: linear-gradient(to right, #1e293b, #334155);
-    color: white;
-    padding: 18px 25px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-/* SECTION */
-
-.section-card {
-    background: rgba(255,255,255,0.95);
-    border-radius: 20px;
-    padding: 20px;
-    width: 100%;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    border: 1px solid #e2e8f0;
-}
-
-/* SUMMARY CARDS */
-
-.summary-cards {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.summary-cards > div {
-    flex: 1;
-    min-width: 180px;
-    border-radius: 15px;
-    padding: 18px;
-    color: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    transition: 0.3s;
-}
-
-.summary-cards > div:hover {
-    transform: translateY(-3px);
-}
-
-/* FORM */
-
-.form-box {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    background: #f8fafc;
-    padding: 18px;
-    border-radius: 15px;
-    border: 1px solid #dbeafe;
-}
-
-.form-box input,
-.form-box select {
-    flex: 1;
-    min-width: 180px;
-}
-
-/* INPUTS */
-
-input,
-select {
-    font-family: 'Noto Nastaliq Urdu', serif;
-    padding: 12px;
-    border: 2px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 15px;
-    width: 100%;
-    transition: 0.3s;
-    background: white;
-}
-
-input:focus,
-select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 8px rgba(59,130,246,0.25);
-}
-
-/* SEARCH */
-
-.search-box {
-    margin-bottom: 1%;
-}
-
-.search-box input {
-    width: 100%;
-    border: 1px solid var(--accent);
-    background: white;
-}
-
-/* BUTTONS */
-
-button {
-    font-family: 'Noto Nastaliq Urdu', serif;
-    padding: 11px 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-    color: white;
-}
-
-button:hover {
-    transform: scale(1.03);
-}
-
-button:active {
-    transform: scale(0.97);
-}
-
-.btn-add {
-    background: linear-gradient(to right, #22c55e, #16a34a);
-}
-
-.btn-danger {
-    background: linear-gradient(to right, #ef4444, #dc2626);
-}
-
-.btn-edit {
-    background: linear-gradient(to right, #a855f7, #9333ea);
-}
-
-.btn-action {
-    background: linear-gradient(to right, #3b82f6, #2563eb);
-}
-
-/* TABLE */
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 20px;
-    border-radius: 15px;
-}
-
-.compact-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    overflow: hidden;
-    border-radius: 15px;
-}
-
-.compact-table th {
-    background: linear-gradient(to right, #1e293b, #334155);
-    color: white;
-    padding: 14px;
-    font-size: 15px;
-}
-
-.compact-table td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #e2e8f0;
-    white-space: nowrap;
-    font-size: 14px;
-}
-
-.compact-table tr:nth-child(even) {
-    background: #f8fafc;
-}
-
-.compact-table tr:hover {
-    background: #dbeafe;
-    transition: 0.3s;
-}
-
-/* PROFILE */
 
 .profile-img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--secondary);
+    border: 3px solid var(--secondary);
     margin-bottom: 15px;
 }
 
-/* ANIMATION */
+#dashboard {
+    font-family: 'Noto Nastaliq Urdu';
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.5s;
+}
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-/* MOBILE */
+.container {
+    font-family: 'Noto Nastaliq Urdu';
+    max-width: 1100px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
 
-@media screen and (max-width: 768px) {
+.header {
+    font-family: 'Noto Nastaliq Urdu';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
 
-    .header {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
+.nav-tabs {
+    font-family: 'Noto Nastaliq Urdu';
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    font-family: 'Noto Nastaliq Urdu';
+    padding: 12px 25px;
+    cursor: pointer;
+    border: none;
+    background: #e0e0e0;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex: 1;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    font-family: 'Noto Nastaliq Urdu';
+}
+
+.form-box {
+    font-family: 'Noto Nastaliq Urdu';
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: #fdfdfd;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    font-family: 'Noto Nastaliq Urdu';
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    font-family: 'Noto Nastaliq Urdu';
+    border: 2px solid var(--accent);
+}
+
+input {
+    font-family: 'Noto Nastaliq Urdu';
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    flex: 1;
+    font-size: 16px;
+    min-width: 150px;
+}
+
+.table-container {
+    font-family: 'Noto Nastaliq Urdu';
+    overflow-x: auto;
+}
+
+table {
+    font-family: 'Noto Nastaliq Urdu';
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 800px;
+}
+
+th,
+td {
+    font-family: 'Noto Nastaliq Urdu';
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--primary);
+    color: white;
+}
+
+button {
+    font-family: 'Noto Nastaliq Urdu';
+    padding: 10px 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s;
+    margin: 2px;
+}
+
+button:active {
+    font-family: 'Noto Nastaliq Urdu';
+    transform: scale(0.95);
+}
+
+.btn-add {
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-edit {
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--warning);
+    color: white;
+}
+
+.btn-action {
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--accent);
+    color: white;
+}
+
+.btn-danger {
+    font-family: 'Noto Nastaliq Urdu';
+    background: var(--danger);
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
     }
 
     .form-box {
         flex-direction: column;
     }
 
-    .summary-cards {
-        flex-direction: column;
+    .tab-btn {
+        padding: 12px 5px;
+        font-size: 16px;
+        font-family: 'Noto Nastaliq Urdu';
+        /* Increased font */
     }
 
-    .compact-table th,
-    .compact-table td {
-        padding: 8px;
-        font-size: 12px;
+    input {
+        font-family: 'Noto Nastaliq Urdu';
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+        /* Increased input text */
+    }
+
+    table {
+        font-family: 'Noto Nastaliq Urdu';
+        min-width: 600px;
+        font-size: 16px;
+        /* Increased table font */
+    }
+
+    th,
+    td {
+        font-family: 'Noto Nastaliq Urdu';
+        padding: 10px 5px;
+        /* Increased padding */
     }
 
     button {
-        width: 100%;
+        font-family: 'Noto Nastaliq Urdu';
+        padding: 10px;
+        font-size: 14px;
+        /* Increased button font */
     }
+
+    .btn-action,
+    .btn-edit,
+    .btn-danger {
+        font-family: 'Noto Nastaliq Urdu';
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+        .urdu-font {
+        font-family: 'Noto Nastaliq Urdu', !important;
+        direction: rtl;
+        line-height: 2;
+    }
+
 }

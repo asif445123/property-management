@@ -1,8 +1,6 @@
 let labors = JSON.parse(localStorage.getItem('thekedar_labors')) || [];
 let owners = JSON.parse(localStorage.getItem('thekedar_owners')) || [];
-let malikExpenses = JSON.parse(localStorage.getItem('thekedar_malik_expenses')) || [];
-let malikLedger = JSON.parse(localStorage.getItem('thekedar_malik_ledger')) || [];
-let supplierRecords = JSON.parse(localStorage.getItem('thekedar_supplier_records')) || [];
+let expenses = JSON.parse(localStorage.getItem('thekedar_expenses')) || [];
 
 labors = labors.map(l => ({ attendance: l.attendance || [], expenses: l.expenses || [], ...l }));
 
@@ -57,8 +55,9 @@ function checkLogin() {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
         updateMazdoorTable();
+        updateMalikTable();
+        updateKharchaTable();
         updateSummary();
-        updateSiteOptions();
         document.getElementById('passCode').value = '';
         currentOTP = null;
         showToast('لاگ ان ہو گیا', 'success');
@@ -70,8 +69,9 @@ function checkLogin() {
 function updateSummary() {
     let totalAya = 0;
     owners.forEach(o => totalAya += o.received);
-
+    
     let totalKharcha = 0;
+    expenses.forEach(e => totalKharcha += e.amount);
     labors.forEach(l => totalKharcha += l.kharcha);
 
     document.getElementById('sumAya').innerText = totalAya.toLocaleString();
@@ -79,43 +79,35 @@ function updateSummary() {
     document.getElementById('sumBaqaya').innerText = (totalAya - totalKharcha).toLocaleString();
 }
 
+function showSection(type) {
+    document.getElementById('mazdoorSection').style.display = type === 'mazdoor' ? 'block' : 'none';
+    document.getElementById('malikSection').style.display = type === 'malik' ? 'block' : 'none';
+    document.getElementById('kharchaSection').style.display = type === 'kharcha' ? 'block' : 'none';
+    document.getElementById('btnMazdoor').classList.toggle('active', type === 'mazdoor');
+    document.getElementById('btnMalik').classList.toggle('active', type === 'malik');
+    document.getElementById('btnKharcha').classList.toggle('active', type === 'kharcha');
+}
+
 function saveData() {
     localStorage.setItem('thekedar_labors', JSON.stringify(labors));
     localStorage.setItem('thekedar_owners', JSON.stringify(owners));
-    localStorage.setItem('thekedar_malik_expenses', JSON.stringify(malikExpenses));
-    localStorage.setItem('thekedar_malik_ledger', JSON.stringify(malikLedger));
-    localStorage.setItem('thekedar_supplier_records', JSON.stringify(supplierRecords));
+    localStorage.setItem('thekedar_expenses', JSON.stringify(expenses));
     updateMazdoorTable();
     updateMalikTable();
-    updateMalikLedger();
-    updateSupplierTable();
+    updateKharchaTable();
     updateSummary();
-    updateSiteOptions();
-}
-
-function updateSiteOptions() {
-    const siteSelect = document.getElementById('mSite');
-    if (!siteSelect) return;
-    siteSelect.innerHTML = '<option value="">سائٹ/ٹھیکیدار منتخب کریں</option>';
-    owners.forEach(o => {
-        siteSelect.innerHTML += `<option value="${o.name}">${o.name}</option>`;
-    });
 }
 
 function addLabor() {
     const name = document.getElementById('mName').value;
     const rate = document.getElementById('mRate').value;
     const mobile = document.getElementById('mMobile').value;
-    const site = document.getElementById('mSite').value;
-    const location = document.getElementById('mLocation').value;
     if (!name || !rate) return showToast("تفصیل درج کریں", 'error');
-    labors.push({ id: Date.now(), name, rate: parseFloat(rate), mobile: mobile || '', site: site || '', location: location || '', att: 0, kharcha: 0, attendance: [], expenses: [] });
+    labors.push({ id: Date.now(), name, rate: parseFloat(rate), mobile: mobile || '', att: 0, kharcha: 0, attendance: [], expenses: [] });
     saveData();
     document.getElementById('mName').value = '';
     document.getElementById('mRate').value = '';
     document.getElementById('mMobile').value = '';
-    document.getElementById('mSite').value = '';
-    document.getElementById('mLocation').value = '';
 }
 
 function exportSectionToPDF(element, fileName) {
@@ -130,9 +122,12 @@ function exportSectionToPDF(element, fileName) {
 }
 
 function exportCurrentSectionPDF() {
-    const section = document.getElementById('mazdoorSection');
+    let sectionId = 'mazdoorSection';
+    if (document.getElementById('btnMalik').classList.contains('active')) sectionId = 'malikSection';
+    if (document.getElementById('btnKharcha').classList.contains('active')) sectionId = 'kharchaSection';
+    const section = document.getElementById(sectionId);
     if (!section) return;
-    exportSectionToPDF(section, 'mazdoorSection.pdf');
+    exportSectionToPDF(section, `${sectionId}.pdf`);
 }
 
 function updateMazdoorTable() {
@@ -150,7 +145,7 @@ function updateMazdoorTable() {
         const lastExpense = l.expenses.length ? l.expenses[l.expenses.length - 1] : null;
         const lastAttendanceText = last ? `${last.date} (${last.day})` : 'N/A';
         const lastExpenseText = lastExpense ? `${lastExpense.date} (${lastExpense.day})` : 'N/A';
-
+        
         totalUjrat += (l.rate * l.att);
         totalPaid += l.kharcha;
         totalBaqaya += baqaya;
@@ -160,13 +155,16 @@ function updateMazdoorTable() {
             <td><b>${l.name}</b></td>
             <td>${l.rate}</td>
             <td>${l.att}</td>
-            <td>${l.site || 'N/A'}</td>
-            <td>${l.location || 'N/A'}</td>
+            <td>${lastAttendanceText}</td>
+            <td>${lastExpenseText}</td>
+            <td>${l.kharcha}</td>
             <td style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight:bold">${baqaya}</td>
             <td>
                 <button class="btn-action" onclick="markAtt(${l.id})" title="حاضری لگائیں">حاضری</button>
-                <button class="btn-action" onclick="addLaborExpense(${l.id})" style="background: #f39c12;" title="خرچہ شامل کریں">💰خرچہ</button>
-                <button class="btn-action" onclick="showLaborProfile(${l.id})" style="background: #8e44ad;">ڈیٹیل</button>
+                <button class="btn-action" onclick="showAttendanceHistory(${l.id})" style="background: #8e44ad;">حاضری دیکھیں</button>
+                <button class="btn-action" onclick="addLaborExpense(${l.id})" style="background: #27ae60;">صارف خرچہ</button>
+                <button class="btn-action" onclick="showLaborExpenseHistory(${l.id})" style="background: #16a085;">خرچہ دیکھیں</button>
+                <button class="btn-action" onclick="showLaborProfile(${l.id})" style="background: #c0392b;">سارا ڈیٹا</button>
                 <button class="btn-edit" onclick="editLabor(${l.id})">ترمیم</button>
                 <button class="btn-danger" onclick="deleteLabor(${l.id})">ڈیلیٹ</button>
             </td>
@@ -254,35 +252,14 @@ async function addLaborExpense(id) {
 function showLaborExpenseHistory(id) {
     const l = labors.find(x => x.id === id);
     const historyHtml = l.expenses.length
-        ? `<div style="text-align:right; padding-right:0;">
-            ${l.expenses.map((e, idx) => `
-                <div style="background: #ecf0f1; padding: 10px; margin: 8px 0; border-radius: 5px; border-right: 3px solid #e74c3c;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <button onclick="deleteExpense(${id}, ${idx})" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">حذف کریں</button>
-                        <span><b>${e.amount}</b> - ${e.note}</span>
-                        <span style="color: #7f8c8d;">${e.date} (${e.day})</span>
-                    </div>
-                </div>
-            `).join('')}
-        </div>`
+        ? `<ul style="text-align:right; padding-right:0;">${l.expenses.map(e => `<li>${e.date} - ${e.day}: ${e.amount} (${e.note})</li>`).join('')}</ul>`
         : '<p>کسی بھی تاریخ پر خرچہ موجود نہیں ہے۔</p>';
     Swal.fire({
         title: `خرچہ کی تفصیل: ${l.name}`,
         html: historyHtml,
-        confirmButtonText: 'بند کریں',
+        confirmButtonText: 'ٹھیک ہے',
         customClass: { popup: 'swal2-popup' }
     });
-}
-
-async function deleteExpense(laborId, expenseIndex) {
-    if (await showConfirm("کیا آپ یہ خرچہ حذف کرنا چاہتے ہیں؟")) {
-        const l = labors.find(x => x.id === laborId);
-        const deletedAmount = l.expenses[expenseIndex].amount;
-        l.expenses.splice(expenseIndex, 1);
-        l.kharcha -= deletedAmount;
-        saveData();
-        showLaborExpenseHistory(laborId);
-    }
 }
 
 function showLaborProfile(id) {
@@ -297,14 +274,6 @@ function showLaborProfile(id) {
                 <tr style="background: #ecf0f1;">
                     <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;"><b>موبائل نمبر</b></td>
                     <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;">${l.mobile || 'درج نہیں'}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;"><b>سائٹ/ٹھیکیدار</b></td>
-                    <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;">${l.site || 'درج نہیں'}</td>
-                </tr>
-                <tr style="background: #ecf0f1;">
-                    <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;"><b>مقام</b></td>
-                    <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;">${l.location || 'درج نہیں'}</td>
                 </tr>
                 <tr>
                     <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;"><b>روز کی دیہاڑی</b></td>
@@ -334,29 +303,11 @@ function showLaborProfile(id) {
         title: `${l.name} کا مکمل ریکارڈ`,
         html: profileHtml,
         confirmButtonText: 'بند کریں',
-        didOpen: function (modal) {
+        didOpen: function(modal) {
             if (whatsappBtn) {
                 const container = modal.querySelector('.swal2-actions');
                 container.insertAdjacentHTML('beforeend', whatsappBtn);
             }
-            const actionsContainer = modal.querySelector('.swal2-actions');
-
-            const expenseBtn = document.createElement('button');
-            expenseBtn.textContent = '💰 خرچہ شامل کریں';
-            expenseBtn.className = 'swal2-styled swal2-default-outline';
-            expenseBtn.style.cssText = 'background: #f39c12; color: white; border: none; margin-left: 10px;';
-            expenseBtn.onclick = () => {
-                addLaborExpense(id);
-                setTimeout(() => showLaborProfile(id), 500);
-            };
-            actionsContainer.insertAdjacentElement('afterbegin', expenseBtn);
-
-            const historyBtn = document.createElement('button');
-            historyBtn.textContent = '📋 خرچہ کی تفصیل';
-            historyBtn.className = 'swal2-styled swal2-default-outline';
-            historyBtn.style.cssText = 'background: #3498db; color: white; border: none; margin-left: 10px;';
-            historyBtn.onclick = () => showLaborExpenseHistory(id);
-            actionsContainer.insertAdjacentElement('afterbegin', historyBtn);
         },
         customClass: { popup: 'swal2-popup' }
     });
@@ -375,15 +326,11 @@ async function editLabor(id) {
     const l = labors.find(x => x.id === id);
     const nName = await showPrompt("نام", 'text', l.name, 'نام درج کریں');
     const nMobile = await showPrompt("موبائل نمبر", 'tel', l.mobile, 'موبائل نمبر درج کریں');
-    const nSite = await showPrompt("سائٹ/ٹھیکیدار", 'text', l.site || '', 'سائٹ یا ٹھیکیدار درج کریں');
-    const nLocation = await showPrompt("مقام", 'text', l.location || '', 'جگہ درج کریں');
     const nR = await showPrompt("نئی دیہاڑی؟", 'number', l.rate, 'نئی دیہاڑی درج کریں');
     const nA = await showPrompt("کل حاضری؟", 'number', l.att, 'حاضری درج کریں');
     const nK = await showPrompt("کل خرچہ؟", 'number', l.kharcha, 'خرچہ درج کریں');
     if (nName !== null && nName !== '') l.name = nName;
     if (nMobile !== null && nMobile !== '') l.mobile = nMobile;
-    if (nSite !== null) l.site = nSite;
-    if (nLocation !== null) l.location = nLocation;
     if (nR !== null && nR !== '') l.rate = parseFloat(nR);
     if (nA !== null && nA !== '') l.att = parseFloat(nA);
     if (nK !== null && nK !== '') l.kharcha = parseFloat(nK);
@@ -397,213 +344,96 @@ async function deleteLabor(id) {
     }
 }
 
-function addMalikExpense() {
-    const description = document.getElementById('malikDescription').value;
-    const amount = document.getElementById('malikAmount').value;
-
-    if (!description || !amount) {
-        return showToast("تفصیل اور رقم درج کریں", 'error');
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    malikExpenses.push({
-        id: Date.now(),
-        date: today,
-        description: description,
-        amount: parseFloat(amount)
-    });
-
+// Malik Functions
+function addOwner() {
+    const name = document.getElementById('ownerName').value;
+    if (!name) return showToast("نام لکھیں", 'error');
+    owners.push({ id: Date.now(), name, received: 0, history: [] });
     saveData();
-    document.getElementById('malikDescription').value = '';
-    document.getElementById('malikAmount').value = '';
-    showToast("خرچہ شامل ہو گیا", 'success');
+    document.getElementById('ownerName').value = '';
 }
 
 function updateMalikTable() {
     const list = document.getElementById('malikList');
-    const searchTerm = document.getElementById('malikSearch').value.toLowerCase();
     list.innerHTML = '';
-
-    let totalExpense = 0;
-    let weekExpense = 0;
-
-    const today = new Date();
-    const weekAgo = new Date(today);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-
-    malikExpenses
-        .filter(e => e.description.toLowerCase().includes(searchTerm))
-        .forEach(e => {
-            totalExpense += e.amount;
-            const expDate = new Date(e.date);
-            if (expDate >= weekAgo && expDate <= today) {
-                weekExpense += e.amount;
-            }
-
-            list.innerHTML += `
-            <tr>
-                <td>${e.date}</td>
-                <td><b>${e.description}</b></td>
-                <td style="color: #e74c3c; font-weight: bold;">${e.amount.toLocaleString()}</td>
-                <td>
-                    <button class="btn-edit" onclick="editMalikExpense(${e.id})">ترمیم</button>
-                    <button class="btn-danger" onclick="deleteMalikExpense(${e.id})">ڈیلیٹ</button>
-                </td>
-            </tr>
-        `;
-        });
-
-    if (document.getElementById('malikTotalExpense')) {
-        document.getElementById('malikTotalExpense').innerText = totalExpense.toLocaleString();
-    }
-    if (document.getElementById('malikWeekExpense')) {
-        document.getElementById('malikWeekExpense').innerText = weekExpense.toLocaleString();
-    }
+    owners.forEach(o => {
+        let histHtml = o.history.map(h => `<div class="history-text">${h.date}: ${h.amount} (${h.from})</div>`).join('');
+        list.innerHTML += `<tr>
+        <td>${o.name}</td>
+        <td>${o.received}</td>
+        <td>${histHtml}</td>
+        <td>
+            <button class="btn-action" onclick="receiveMoney(${o.id})">پیسہ ملا</button>
+            <button class="btn-danger" onclick="deleteOwner(${o.id})">ڈیلیٹ</button>
+        </td>
+    </tr>`;
+    });
 }
 
-async function editMalikExpense(id) {
-    const expense = malikExpenses.find(x => x.id === id);
-    const nDescription = await showPrompt("تفصیل", 'text', expense.description, 'تفصیل درج کریں');
-    const nAmount = await showPrompt("رقم", 'number', expense.amount, 'رقم درج کریں');
-
-    if (nDescription !== null && nDescription !== '') expense.description = nDescription;
-    if (nAmount !== null && nAmount !== '') expense.amount = parseFloat(nAmount);
-
+async function receiveMoney(id) {
+    const amt = await showPrompt("کتنی رقم ملی؟", 'number', '', 'رقم درج کریں');
+    if (amt === null || amt === '') return;
+    const sender = await showPrompt("کس نے بھیجی؟", 'text', '', 'نام درج کریں');
+    let o = owners.find(x => x.id === id);
+    o.received += parseFloat(amt);
+    o.history.push({ date: new Date().toLocaleDateString('en-GB'), amount: amt, from: sender || "N/A" });
     saveData();
 }
 
-async function deleteMalikExpense(id) {
-    if (await showConfirm("کیا آپ یہ خرچہ حذف کرنا چاہتے ہیں؟")) {
-        malikExpenses = malikExpenses.filter(x => x.id !== id);
+async function deleteOwner(id) {
+    if (await showConfirm("کیا آپ ڈیلیٹ کرنا چاہتے ہیں؟")) {
+        owners = owners.filter(x => x.id !== id);
         saveData();
     }
 }
 
-function exportMalikSectionPDF() {
-    const section = document.getElementById('malikSection');
-    if (!section) return;
-    exportSectionToPDF(section, 'malik-kharcha.pdf');
-}
+// Kharcha Book Functions
+function addExpense() {
+    const name = document.getElementById('kName').value;
+    const location = document.getElementById('kLocation').value || "N/A";
+    const amount = document.getElementById('kAmount').value;
+    let dateVal = document.getElementById('kDate').value;
 
-function addMalikInvestment() {
-    const amount = document.getElementById('malikInvestAmount').value;
-    if (!amount) {
-        return showToast("رقم درج کریں", 'error');
+    if (!name || !amount) return showToast("آئٹم اور رقم لکھیں!", 'error');
+
+    if (!dateVal) {
+        const today = new Date();
+        dateVal = today.toISOString().split('T')[0];
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    malikLedger.push({
-        id: Date.now(),
-        date: today,
-        type: 'investment',
-        description: 'رقم ڈالی',
-        amount: parseFloat(amount)
-    });
+    const d = new Date(dateVal);
+    const days = ['اتوار', 'پیر', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ'];
+    const dayName = days[d.getDay()];
 
+    expenses.push({ id: Date.now(), name, location, amount: parseFloat(amount), date: dateVal, day: dayName });
     saveData();
-    document.getElementById('malikInvestAmount').value = '';
-    showToast("رقم شامل ہو گی", 'success');
+
+    document.getElementById('kName').value = '';
+    document.getElementById('kLocation').value = '';
+    document.getElementById('kAmount').value = '';
+    document.getElementById('kDate').value = '';
 }
 
-function addMalikIncome() {
-    const amount = document.getElementById('malikIncomeAmount').value;
-    if (!amount) {
-        return showToast("رقم درج کریں", 'error');
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    malikLedger.push({
-        id: Date.now(),
-        date: today,
-        type: 'income',
-        description: 'رقم آئی',
-        amount: parseFloat(amount)
-    });
-
-    saveData();
-    document.getElementById('malikIncomeAmount').value = '';
-    showToast("رقم شامل ہو گی", 'success');
-}
-
-function updateMalikLedger() {
-    const list = document.getElementById('malikLedgerList');
+function updateKharchaTable() {
+    const list = document.getElementById('kharchaList');
+    if (!list) return; // defensive check
     list.innerHTML = '';
-
-    let invested = 0;
-    let income = 0;
-    let expensed = 0;
-
-    malikLedger.forEach(entry => {
-        if (entry.type === 'investment') {
-            invested += entry.amount;
-        } else if (entry.type === 'income') {
-            income += entry.amount;
-        }
+    expenses.forEach(e => {
+        list.innerHTML += `<tr>
+        <td>${e.name}</td>
+        <td>${e.location || "N/A"}</td>
+        <td>${e.amount}</td>
+        <td>${e.date} (${e.day})</td>
+        <td>
+            <button class="btn-danger" onclick="deleteExpense(${e.id})">ڈیلیٹ</button>
+        </td>
+    </tr>`;
     });
-
-    expensed = malikExpenses.reduce((sum, e) => sum + e.amount, 0);
-    const balance = invested - expensed + income;
-
-    // Display ledger entries
-    const allEntries = [
-        ...malikLedger.map(e => ({
-            date: e.date,
-            description: e.description,
-            amount: e.amount,
-            type: e.type,
-            id: e.id,
-            category: 'ledger'
-        })),
-        ...malikExpenses.map(e => ({
-            date: e.date,
-            description: e.description,
-            amount: -e.amount,
-            type: 'expense',
-            id: e.id,
-            category: 'expense'
-        }))
-    ].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    allEntries.forEach(entry => {
-        const amountColor = entry.amount > 0 ? '#27ae60' : '#e74c3c';
-        const amountSign = entry.amount > 0 ? '+' : '';
-
-        list.innerHTML += `
-        <tr>
-            <td>${entry.date}</td>
-            <td><b>${entry.description}</b></td>
-            <td style="color: ${amountColor}; font-weight: bold;">${amountSign}${entry.amount.toLocaleString()}</td>
-            <td>
-                ${entry.category === 'ledger' ? `<button class="btn-danger" onclick="deleteLedgerEntry(${entry.id})">ڈیلیٹ</button>` : `<button class="btn-danger" onclick="deleteMalikExpense(${entry.id})">ڈیلیٹ</button>`}
-            </td>
-        </tr>
-    `;
-    });
-
-    // Update summary cards
-    if (document.getElementById('malikInvested')) {
-        document.getElementById('malikInvested').innerText = invested.toLocaleString();
-    }
-    if (document.getElementById('malikIncome')) {
-        document.getElementById('malikIncome').innerText = income.toLocaleString();
-    }
-    if (document.getElementById('malikExpensed')) {
-        document.getElementById('malikExpensed').innerText = expensed.toLocaleString();
-    }
-    if (document.getElementById('malikBalance')) {
-        document.getElementById('malikBalance').innerText = balance.toLocaleString();
-        document.getElementById('malikBalance').style.color = balance >= 0 ? '#4caf50' : '#e74c3c';
-    }
 }
 
-async function deleteLedgerEntry(id) {
-    if (await showConfirm("کیا آپ یہ اندراج حذف کرنا چاہتے ہیں؟")) {
-        malikLedger = malikLedger.filter(x => x.id !== id);
+async function deleteExpense(id) {
+    if (await showConfirm("کیا آپ ڈیلیٹ کرنا چاہتے ہیں؟")) {
+        expenses = expenses.filter(x => x.id !== id);
         saveData();
     }
 }
-
-updateSiteOptions();
-updateMalikTable();
-updateMalikLedger();
-updateSupplierTable();
