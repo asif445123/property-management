@@ -42,7 +42,7 @@ async function showPrompt(message, inputType = 'text', inputValue = '', placehol
 }
 
 function sendOTP() {
-    currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
+    currentOTP = Math.floor(1 + Math.random() * 9).toString();
     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
 }
 
@@ -225,7 +225,7 @@ async function markAtt(id) {
 function showAttendanceHistory(id) {
     const l = labors.find(x => x.id === id);
     const historyHtml = l.attendance.length
-        ? `<ul style="text-align:right; padding-right:0;">${l.attendance.map(a => `<li>${a.date} - ${a.day}</li>`).join('')}</ul>`
+        ? `<ul style="text-align:right; padding-right:30px;">${l.attendance.map(a => `<li>${a.date} - ${a.day}</li>`).join('')}</ul>`
         : '<p>کسی بھی تاریخ پر حاضری موجود نہیں ہے۔</p>';
     Swal.fire({
         title: `حاضری کی تفصیل: ${l.name}`,
@@ -237,11 +237,11 @@ function showAttendanceHistory(id) {
 
 async function addLaborExpense(id) {
     const today = new Date().toISOString().split('T')[0];
-    const dateVal = await showPrompt("خرچہ کی تاریخ منتخب کریں", 'date', today, 'تاریخ منتخب کریں');
+    const dateVal = await showPrompt("تاریخ", 'date', today, 'تاریخ منتخب کریں');
     if (dateVal === null || dateVal === '') return;
-    const amount = await showPrompt("کتنا خرچہ ہوا؟", 'number', '', 'رقم درج کریں');
+    const amount = await showPrompt("کتنا خرچہ دیا؟", 'number', '', 'رقم درج کریں');
     if (amount === null || amount === '' || isNaN(amount)) return;
-    const note = await showPrompt("خرچہ کس لئے ہے؟", 'text', '', 'تفصیل درج کریں');
+    const note = await showPrompt("خرچہ کس لئے دیا؟", 'text', '', 'تفصیل درج کریں');
     const l = labors.find(x => x.id === id);
     const dayName = getDayName(dateVal);
     l.expenses.push({ date: dateVal, day: dayName, amount: parseFloat(amount), note: note || 'N/A' });
@@ -252,7 +252,7 @@ async function addLaborExpense(id) {
 function showLaborExpenseHistory(id) {
     const l = labors.find(x => x.id === id);
     const historyHtml = l.expenses.length
-        ? `<ul style="text-align:right; padding-right:0;">${l.expenses.map(e => `<li>${e.date} - ${e.day}: ${e.amount} (${e.note})</li>`).join('')}</ul>`
+        ? `<ul style="text-align:right; padding-right:30px;">${l.expenses.map(e => `<li>${e.date} - ${e.day}: ${e.amount} (${e.note})</li>`).join('')}</ul>`
         : '<p>کسی بھی تاریخ پر خرچہ موجود نہیں ہے۔</p>';
     Swal.fire({
         title: `خرچہ کی تفصیل: ${l.name}`,
@@ -270,7 +270,7 @@ function showLaborProfile(id) {
     const profileHtml = `
         <div style="text-align:right; direction:rtl;">
             <h3 style="color: #2c3e50; margin-bottom: 15px;">${l.name}</h3>
-            <table style="width:100%; margin-bottom: 15px; border-collapse: collapse;">
+            <table style="width:20%; margin-bottom: 15px; border-collapse: collapse;">
                 <tr style="background: #ecf0f1;">
                     <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;"><b>موبائل نمبر</b></td>
                     <td style="padding: 8px; border: 1px solid #bdc3c7; text-align:right;">${l.mobile || 'درج نہیں'}</td>
@@ -346,10 +346,11 @@ async function deleteLabor(id) {
 
 // Malik Functions
 function addOwner() {
+    const site = document.getElementById('ownerSite').value;
     const name = document.getElementById('ownerName').value;
     const amount = document.getElementById('ownerAmount').value;
     if (!name) return showToast("نام لکھیں", 'error');
-    owners.push({ id: Date.now(), name, received: parseFloat(amount) || 0, history: [] });
+    owners.push({ Date: new Date().toLocaleDateString('en-GB'), site, name, received: parseFloat(amount) || 0, history: [] });
     saveData();
     document.getElementById('ownerName').value = '';
 }
@@ -361,6 +362,8 @@ function updateMalikTable() {
     owners.forEach(o => {
         let histHtml = o.history.map(h => `<div class="history-text">${h.date}: ${h.amount} (${h.from})</div>`).join('');
         list.innerHTML += `<tr>
+        <td>${o.Date}</td>
+        <td>${o.site}</td>
         <td>${o.name}</td>
         <td>${o.received}</td>
         <td>${histHtml}</td>
@@ -375,12 +378,26 @@ function updateMalikTable() {
 async function receiveMoney(id) {
     const amt = await showPrompt("کتنی رقم ملی؟", 'number', '', 'رقم درج کریں');
     if (amt === null || amt === '') return;
-    const sender = await showPrompt("کس نے بھیجی؟", 'text', '', 'نام درج کریں');
+    const sender = await showPrompt("کس طرح بھیجی؟", 'text', '', 'کیش،بنک ٹرانسفر، جازکیش،');
     let o = owners.find(x => x.id === id);
     o.received += parseFloat(amt);
     o.history.push({ date: new Date().toLocaleDateString('en-GB'), amount: amt, from: sender || "N/A" });
     saveData();
 }
+
+// async function addLaborExpense(id) {
+//     const today = new Date().toISOString().split('T')[0];
+//     const dateVal = await showPrompt("خرچہ کی تاریخ منتخب کریں", 'date', today, 'تاریخ منتخب کریں');
+//     if (dateVal === null || dateVal === '') return;
+//     const amount = await showPrompt("کتنا خرچہ ہوا؟", 'number', '', 'رقم درج کریں');
+//     if (amount === null || amount === '' || isNaN(amount)) return;
+//     const note = await showPrompt("خرچہ کس لئے ہے؟", 'text', '', 'تفصیل درج کریں');
+//     const l = labors.find(x => x.id === id);
+//     const dayName = getDayName(dateVal);
+//     l.expenses.push({ date: dateVal, day: dayName, amount: parseFloat(amount), note: note || 'N/A' });
+//     l.kharcha += parseFloat(amount);
+//     saveData();
+// }
 
 async function deleteOwner(id) {
     if (await showConfirm("کیا آپ ڈیلیٹ کرنا چاہتے ہیں؟")) {

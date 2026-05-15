@@ -35,27 +35,7 @@
                 <h2 style="margin:0;">ٹھیکیدار رجسٹر</h2>
                 <button class="btn-danger" onclick="location.reload()">لاگ آؤٹ</button>
             </div>
-
-            <div class="summary-cards" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <div
-                    style="flex:1; min-width: 120px; background: #e8f5e9; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60;">
-                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">کل آمدنی</h3>
-                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #27ae60;" id="sumAya">0</p>
-                </div>
-                <div
-                    style="flex:1; min-width: 120px; background: #ffebee; padding: 15px; border-radius: 8px; border-left: 5px solid #e74c3c;">
-                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">کل خرچہ</h3>
-                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #e74c3c;" id="sumKharcha">0
-                    </p>
-                </div>
-                <div
-                    style="flex:1; min-width: 120px; background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db;">
-                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">بقایا بیلنس</h3>
-                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #3498db;" id="sumBaqaya">0
-                    </p>
-                </div>
-            </div>
-
+          
             <div class="nav-tabs">
                 <button class="tab-btn active" id="btnMazdoor" onclick="showSection('mazdoor')">مزدور حساب</button>
                 <button class="tab-btn" id="btnMalik" onclick="showSection('malik')">مالک ادائیگیاں</button>
@@ -130,11 +110,11 @@
 
             <div id="malikSection" style="display:none;">
                 <div class="form-box">
-                    <input type="text" id="ownerName" placeholder="سائٹ کا نام">
-                    <input type="number" id="ownerAmount" placeholder="کل رقم">
-                    <input type="text" id="ownerDesc" placeholder="تفصیل">
                     <input type="date" id="ownerDate" title="تاریخ">
-                    <input type="text" id="ownerSearch" placeholder=" مالک " onkeyup="updateMalikTable()">
+                    <input type="text" id="ownerSite" placeholder="سائٹ کا نام">
+                    <input type="text" id="ownerName" placeholder="مالک کا نام">
+                    <input type="number" id="ownerAmount" placeholder="کل رقم">
+                    <input type="text" id="ownerDesc" placeholder=" کام تفصیل">
                     <button class="btn-add" onclick="addOwner()">+ نئی سائٹ</button>
                     <button class="btn-action print-btn" style="background-color: #8e44ad;" onclick="exportCurrentSectionPDF()">📄 PDF ڈاؤن لوڈ کریں</button>
                 </div>
@@ -142,10 +122,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>"سائٹ کا نام</th>
-                                <th>مالک/</th>
+                                <th>تاریخ</th>
+                                <th>سائٹ کا نام</th>
+                                <th>مالک کا نام</th>
                                 <th>کل رقم</th>
-                                <th>baki</th>
+                                <th>تفصیل</th>
+                                <th>بقایا</th>
                                 <th>ایکشن</th>
                             </tr>
                         </thead>
@@ -155,6 +137,27 @@
             </div>
 
             <div id="kharchaSection" style="display:none;">
+
+                  <div class="summary-cards" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div
+                    style="flex:1; min-width: 120px; background: #e8f5e9; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60;">
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">کل آمدنی</h3>
+                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #27ae60;" id="sumAya">0</p>
+                </div>
+                <div
+                    style="flex:1; min-width: 120px; background: #ffebee; padding: 15px; border-radius: 8px; border-left: 5px solid #e74c3c;">
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">کل خرچہ</h3>
+                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #e74c3c;" id="sumKharcha">0
+                    </p>
+                </div>
+                <div
+                    style="flex:1; min-width: 120px; background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db;">
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 1em;">بقایا بیلنس</h3>
+                    <p style="font-size: 1.2em; font-weight: bold; margin: 5px 0 0; color: #3498db;" id="sumBaqaya">0
+                    </p>
+                </div>
+            </div>
+                
                 <div class="form-box">
                     <input type="text" id="kName" placeholder="کیا لایا؟">
                     <input type="text" id="kLocation" placeholder="کہاں خرچہ ہوا؟">
