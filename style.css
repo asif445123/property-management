@@ -199,6 +199,13 @@ button:active {
     color: white;
 }
 
+/* Malik (مالک) specific action buttons */
+.btn-deal { background: #8e44ad; color: white; }
+.btn-deal-detail { background: #2980b9; color: white; }
+.btn-receipt { background: #27ae60; color: white; }
+.btn-history { background: #16a085; color: white; }
+.btn-detail { background: #c0392b; color: white; }
+
 .btn-danger {
     font-family: 'Noto Nastaliq Urdu';
     background: var(--danger);
