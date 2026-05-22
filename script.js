@@ -490,16 +490,22 @@ function showLaborProfile(id) {
                     <p style="padding: 20px;"><strong>بقایا رقم  :  </strong> ${baqaya.toLocaleString()} روپے</p>
         </div>
     `;
-    const whatsappBtn = l.mobile ? `<a href="https://wa.me/${l.mobile}?text=${encodeURIComponent(`سلام ${l.name}  بھائی یہ آپ کے کام کا ریکارڈ ہے۔   آپ کی کل مزدوری ${l.rate * l.att}روہے ہے آب کو  ${l.kharcha} روپے دیئے ہیں ، بقایا  ${baqaya}روپے رہ گئے ہے`)}" target="_blank" class="swal2-styled swal2-default-outline" style="background: #25d366; color: white; border: none; margin-left: 10px;">💬 WhatsApp بھیجیں</a>` : '';
+    const whatsappBtn = l.mobile ? `<a href="https://wa.me/${l.mobile}?text=${encodeURIComponent(`سلام ${l.name}  بھائی یہ آپ کے کام کا ریکارڈ ہے۔   آپ کی کل مزدوری    ${l.rate * l.att} روہے ہے آب کو ${l.kharcha} روپے دیئے ہیں اور بقایا  ${baqaya}روپے رہ گئے ہیں`)}" target="_blank" class="swal2-styled swal2-default-outline" style="background: #25d366; color: white; border: none; margin-left: 10px;">💬 وٹس ایپ بھیجیں</a>` : '';
     Swal.fire({
         title: `${l.name} مزدور کی تفصیل`,
         html: profileHtml,
         confirmButtonText: 'ٹھیک ہے',
         didOpen: function(modal) {
+            const container = modal.querySelector('.swal2-actions');
             if (whatsappBtn) {
-                const container = modal.querySelector('.swal2-actions');
                 container.insertAdjacentHTML('beforeend', whatsappBtn);
             }
+            // const pdfBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#3498db;color:white;border:none;margin-left:10px;" onclick="downloadLaborDetailsPDF(${l.id})">📄 PDF ڈاؤن لوڈ کریں</button>`;
+            // container.insertAdjacentHTML('beforeend', pdfBtn);
+            // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('labor', ${l.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
+            // container.insertAdjacentHTML('beforeend', imgBtn);
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">📤  تصویر بھیجیں</button>`;
+            container.insertAdjacentHTML('beforeend', waShareBtn);
         },
         customClass: { popup: 'swal2-popup' }
     });
@@ -714,8 +720,34 @@ function showOwnerDetails(id) {
         title: 'مالک کی تفصیل',
         html: detailHtml,
         confirmButtonText: 'ٹھیک ہے',
+        didOpen: function(modal) {
+            const container = modal.querySelector('.swal2-actions');
+            // const pdfBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#3498db;color:white;border:none;margin-left:10px;" onclick="downloadOwnerDetailsPDF(${o.id})">📄 PDF ڈاؤن لوڈ کریں</button>`;
+            // container.insertAdjacentHTML('beforeend', pdfBtn);
+            // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('owner', ${o.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
+            // container.insertAdjacentHTML('beforeend', imgBtn);
+            const waBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="sendOwnerWhatsApp(${o.id})">💬 وٹس ایپ بھیجیں</button>`;
+            container.insertAdjacentHTML('beforeend', waBtn);
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">📤 تصویر بھیجیں</button>`;
+            container.insertAdjacentHTML('beforeend', waShareBtn);
+        },
         customClass: { popup: 'swal2-popup' }
     });
+}
+
+async function sendOwnerWhatsApp(ownerId) {
+    const o = owners.find(x => x.id === ownerId);
+    if (!o) return showToast('مالک نہیں ملا', 'error');
+    const mobile = await showPrompt('مالک کا موبائل نمبر درج کریں (مثال: 92300...)', 'tel', o.mobile || '', 'موبائل نمبر درج کریں');
+    if (!mobile) return;
+    const baseContract = parseFloat(o.contractTotal || 0).toLocaleString();
+    const dealInfo = getOwnerDealInfo(o);
+    const totalContract = (baseContract && dealInfo.dealAmount) ? (parseFloat(o.contractTotal || 0) + dealInfo.dealAmount) : (parseFloat(o.contractTotal || 0) + dealInfo.dealAmount);
+    const received = parseFloat(o.received || 0).toLocaleString();
+    const balance = (parseFloat(o.contractTotal || 0) + dealInfo.dealAmount - parseFloat(o.received || 0)).toLocaleString();
+    const message = `سلام ${o.name} صاحب، آپ کی سائٹ: ${o.site}. ٹوٹل ٹھیکہ: ${totalContract} روپے. کل وصولی: ${received} روپے. بقایا: ${balance} روپے. تفصیل: ${o.desc || 'N/A'}`;
+    const url = `https://wa.me/${mobile}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
 }
 
 async function deleteOwner(id) {
@@ -812,4 +844,213 @@ function filterBySite(section) {
     } else if (section === 'kharcha') {
         updateKharchaTable();
     }
+}
+
+function downloadLaborDetailsPDF(laborId) {
+    const l = labors.find(x => x.id === laborId);
+    if (!l) return showToast('مزدور نہیں ملا', 'error');
+    const baqaya = (l.rate * l.att) - l.kharcha;
+    const profileHtml = `
+        <div style="text-align:right; direction:rtl;">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">${l.name}</h3>
+            <p style="padding: 20px;"><strong>مزدور کا نام  :  </strong> ${l.name}</p>
+            <p style="padding: 20px;"><strong>سائٹ کا نام  :  </strong> ${l.site || 'درج نہیں'}</p>
+            <p style="padding: 20px;"><strong>موبائل نمبر  :  </strong> ${l.mobile || 'درج نہیں'}</p>
+            <p style="padding: 20px;"><strong>روز کی دیہاڑی  :  </strong> ${l.rate} روپے</p>
+            <p style="padding: 20px;"><strong>کل حاضری  :  </strong> ${l.att} دن</p>
+            <p style="padding: 20px;"><strong>کل اجرت  :  </strong> ${(l.rate * l.att).toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>کل خرچہ  :  </strong> ${l.kharcha.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>بقایا رقم  :  </strong> ${baqaya.toLocaleString()} روپے</p>
+        </div>
+    `;
+    const temp = document.createElement('div');
+    temp.innerHTML = profileHtml;
+    document.body.appendChild(temp);
+    exportSectionToPDF(temp, `${l.name || 'mazdoor'}-تفصیل.pdf`);
+    setTimeout(() => document.body.removeChild(temp), 500);
+}
+
+function downloadOwnerDetailsPDF(ownerId) {
+    const o = owners.find(x => x.id === ownerId);
+    if (!o) return showToast('مالک نہیں ملا', 'error');
+    const baseContract = parseFloat(o.contractTotal || 0);
+    const dealInfo = getOwnerDealInfo(o);
+    const totalContract = baseContract + dealInfo.dealAmount;
+    const received = parseFloat(o.received || 0);
+    const balance = totalContract - received;
+    const detailHtml = `
+        <div style="text-align:right; direction:rtl;">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">${o.name}</h3>
+            <p style="padding: 20px;"><strong>سائٹ کا نام  :   </strong> ${o.site}</p>
+            <p style="padding: 20px;"><strong>مالک  کا نام  :   </strong> ${o.name}</p>
+            <p style="padding: 20px;"><strong>تاریخ  :   </strong> ${o.date}</p>
+            <p style="padding: 20px;"><strong>دن     :   </strong> ${o.day}</p>
+            <p style="padding: 20px;"><strong>پہلے کا ٹھیکہ  :   </strong> ${baseContract.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>کل نئی ڈیلز  :   </strong> ${dealInfo.dealCount}</p>
+            <p style="padding: 20px;"><strong>کل نئی ڈیلز کی رقم  :   </strong> ${dealInfo.dealAmount.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>ٹوٹل ٹھیکہ  :   </strong> ${totalContract.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>کل وصولی  :   </strong> ${received.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>بقایا  :   </strong> ${balance.toLocaleString()} روپے</p>
+            <p style="padding: 20px;"><strong>ڈیل کی تفصیل  :   </strong> ${o.desc || 'N/A'}</p>
+        </div>
+    `;
+    const temp = document.createElement('div');
+    temp.innerHTML = detailHtml;
+    document.body.appendChild(temp);
+    exportSectionToPDF(temp, `${o.name || 'malik'}-تفصیل.pdf`);
+    setTimeout(() => document.body.removeChild(temp), 500);
+}
+
+function downloadDetailAsImage(type, id) {
+    let content = '';
+    let fileName = '';
+    if (type === 'labor') {
+        const l = labors.find(x => x.id === id);
+        if (!l) return showToast('مزدور نہیں ملا', 'error');
+        const baqaya = (l.rate * l.att) - l.kharcha;
+        fileName = `${l.name}-تفصیل.png`;
+        content = `مزدور کی تفصیل\n${l.name}\n\nمزدور کا نام: ${l.name}\nسائٹ کا نام: ${l.site || 'درج نہیں'}\nموبائل: ${l.mobile || 'درج نہیں'}\nروز کی دیہاڑی: ${l.rate} روپے\nکل حاضری: ${l.att} دن\nکل اجرت: ${(l.rate * l.att).toLocaleString()} روپے\nکل خرچہ: ${l.kharcha.toLocaleString()} روپے\nبقایا رقم: ${baqaya.toLocaleString()} روپے`;
+    } else if (type === 'owner') {
+        const o = owners.find(x => x.id === id);
+        if (!o) return showToast('مالک نہیں ملا', 'error');
+        const baseContract = parseFloat(o.contractTotal || 0);
+        const dealInfo = getOwnerDealInfo(o);
+        const totalContract = baseContract + dealInfo.dealAmount;
+        const received = parseFloat(o.received || 0);
+        const balance = totalContract - received;
+        fileName = `${o.name}-تفصیل.png`;
+        content = `مالک کی تفصیل\n${o.name}\n\nسائٹ کا نام: ${o.site}\nمالک کا نام: ${o.name}\nتاریخ: ${o.date}\nدن: ${o.day}\nپہلے کا ٹھیکہ: ${baseContract.toLocaleString()} روپے\nکل نئی ڈیلز: ${dealInfo.dealCount}\nکل نئی ڈیلز کی رقم: ${dealInfo.dealAmount.toLocaleString()} روپے\nٹوٹل ٹھیکہ: ${totalContract.toLocaleString()} روپے\nکل وصولی: ${received.toLocaleString()} روپے\nبقایا: ${balance.toLocaleString()} روپے\nڈیل کی تفصیل: ${o.desc || 'N/A'}`;
+    }
+    
+    if (!content) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 900;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(content.split('\n')[0], 560, 40);
+    ctx.font = '16px Arial';
+    const lines = content.split('\n');
+    let y = 100;
+    for (let i = 1; i < lines.length; i++) {
+        ctx.fillText(lines[i], 560, y);
+        y += 40;
+    }
+    canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 'image/png');
+}
+
+async function shareDetailToWhatsApp(type, id) {
+    showToast('براہ راست تصویر بھیج رہے ہیں...', 'info');
+    
+    let htmlContent = '';
+    let fileName = '';
+    
+    if (type === 'labor') {
+        const l = labors.find(x => x.id === id);
+        if (!l) return showToast('مزدور نہیں ملا', 'error');
+        const baqaya = (l.rate * l.att) - l.kharcha;
+        fileName = `${l.name}-تفصیل`;
+        htmlContent = `
+            <div style="text-align:right; direction:rtl; padding: 30px; background: #fff; font-family: Arial, sans-serif; color: #2c3e50;">
+                <h2 style="margin-top: 0; font-size: 24px; border-bottom: 3px solid #3498db; padding-bottom: 10px;">${l.name}</h2>
+                <p style="padding: 8px; font-size: 14px;"><strong>مزدور کا نام:</strong> ${l.name}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>سائٹ کا نام:</strong> ${l.site || 'درج نہیں'}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>موبائل:</strong> ${l.mobile || 'درج نہیں'}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>روز کی دیہاڑی:</strong> ${l.rate} روپے</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل حاضری:</strong> ${l.att} دن</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل اجرت:</strong> ${(l.rate * l.att).toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل خرچہ:</strong> ${l.kharcha.toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px; background: #ecf0f1; border-radius: 5px;"><strong>بقایا رقم:</strong> <span style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight: bold;">${baqaya.toLocaleString()} روپے</span></p>
+            </div>
+        `;
+    } else if (type === 'owner') {
+        const o = owners.find(x => x.id === id);
+        if (!o) return showToast('مالک نہیں ملا', 'error');
+        const baseContract = parseFloat(o.contractTotal || 0);
+        const dealInfo = getOwnerDealInfo(o);
+        const totalContract = baseContract + dealInfo.dealAmount;
+        const received = parseFloat(o.received || 0);
+        const balance = totalContract - received;
+        fileName = `${o.name}-تفصیل`;
+        htmlContent = `
+            <div style="text-align:right; direction:rtl; padding: 30px; background: #fff; font-family: Arial, sans-serif; color: #2c3e50;">
+                <h2 style="margin-top: 0; font-size: 24px; border-bottom: 3px solid #3498db; padding-bottom: 10px;">${o.name}</h2>
+                <p style="padding: 8px; font-size: 14px;"><strong>سائٹ کا نام:</strong> ${o.site}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>مالک کا نام:</strong> ${o.name}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>تاریخ:</strong> ${o.date}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>دن:</strong> ${o.day}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>پہلے کا ٹھیکہ:</strong> ${baseContract.toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل نئی ڈیلز:</strong> ${dealInfo.dealCount}</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل نئی ڈیلز کی رقم:</strong> ${dealInfo.dealAmount.toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>ٹوٹل ٹھیکہ:</strong> ${totalContract.toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px;"><strong>کل وصولی:</strong> ${received.toLocaleString()} روپے</p>
+                <p style="padding: 8px; font-size: 14px; background: #ecf0f1; border-radius: 5px;"><strong>بقایا:</strong> <span style="color: ${balance >= 0 ? 'green' : 'red'}; font-weight: bold;">${balance.toLocaleString()} روپے</span></p>
+                <p style="padding: 8px; font-size: 14px;"><strong>ڈیل کی تفصیل:</strong> ${o.desc || 'N/A'}</p>
+            </div>
+        `;
+    }
+    
+    if (!htmlContent) return;
+    
+    const container = document.createElement('div');
+    container.innerHTML = htmlContent;
+    container.style.width = '800px';
+    container.style.backgroundColor = 'white';
+    document.body.appendChild(container);
+    
+    try {
+        const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        document.body.removeChild(container);
+        
+        canvas.toBlob(async function(blob) {
+            const file = new File([blob], `${fileName}.png`, { type: 'image/png' });
+            
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: fileName,
+                        text: 'تفصیلات'
+                    });
+                    showToast('تصویر شیئر ہو گئی!', 'success');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('شیئر کریں میں خرابی:', err);
+                        downloadShareFile(blob, `${fileName}.png`);
+                    }
+                }
+            } else {
+                downloadShareFile(blob, `${fileName}.png`);
+            }
+        }, 'image/png');
+    } catch (error) {
+        console.error('تصویر بنانے میں خرابی:', error);
+        showToast('تصویر بنانے میں خرابی پیش آئی۔ براہ مہربانی دوبارہ کوشش کریں۔', 'error');
+        document.body.removeChild(container);
+    }
+}
+
+function downloadShareFile(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('تصویر ڈاؤن لوڈ ہو گئی۔ اسے WhatsApp میں کھول کر بھیجیں۔', 'success');
 }
