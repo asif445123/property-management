@@ -172,18 +172,21 @@ function updateMalikSummary() {
     const totalContract = owners.reduce((s, o) => s + (parseFloat(o.contractTotal) || 0), 0);
     const totalDealCount = owners.reduce((s, o) => s + getOwnerDealInfo(o).dealCount, 0);
     const totalDealAmount = owners.reduce((s, o) => s + getOwnerDealInfo(o).dealAmount, 0);
+    const totalnewContract = totalContract + totalDealAmount;
     const totalReceived = owners.reduce((s, o) => s + (parseFloat(o.received) || 0), 0);
     const totalBalance = totalContract + totalDealAmount - totalReceived;
 
     const cEl = document.getElementById('malikTotalContract');
     const countEl = document.getElementById('malikDealCount');
     const dealAmountEl = document.getElementById('malikDealAmount');
+    const totalnewContractEl = document.getElementById('malikTotalNewContract');
     const rEl = document.getElementById('malikTotalReceived');
     const bEl = document.getElementById('malikTotalBalance');
 
     if (cEl) cEl.innerText = totalContract.toLocaleString();
     if (countEl) countEl.innerText = totalDealCount.toLocaleString();
     if (dealAmountEl) dealAmountEl.innerText = totalDealAmount.toLocaleString();
+    if (totalnewContractEl) totalnewContractEl.innerText = totalnewContract.toLocaleString();
     if (rEl) rEl.innerText = totalReceived.toLocaleString();
     if (bEl) bEl.innerText = totalBalance.toLocaleString();
 }
@@ -371,13 +374,13 @@ function updateMazdoorTable() {
             <td>${l.kharcha}</td>
             <td style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight:bold">${baqaya}</td>
             <td>
-                <button class="btn-action" onclick="markAtt(${l.id})" title="حاضری لگائیں">حاضری</button>
-                <button class="btn-action" onclick="showAttendanceHistory(${l.id})" style="background: #8e44ad;"> دیکھیں</button>
-                <button class="btn-action" onclick="addLaborExpense(${l.id})" style="background: #27ae60;">خرچہ</button>
-                <button class="btn-action" onclick="showLaborExpenseHistory(${l.id})" style="background: #16a085;"> دیکھیں</button>
-                <button class="btn-action" onclick="showLaborProfile(${l.id})" style="background: #c0392b;">تفصیل</button>
-                <button class="btn-edit" onclick="editLabor(${l.id})">ترمیم</button>
-                <button class="btn-danger" onclick="deleteLabor(${l.id})">ڈیلیٹ</button>
+                <button class="action-btn" style="background: #27ae60;" onclick="markAtt(${l.id})" title="حاضری لگائیں">✅</button>
+                <button class="action-btn" style="background: #8e44ad;" onclick="showAttendanceHistory(${l.id})" title="حاضری کی تاریخ">📅</button>
+                <button class="action-btn" style="background: #27ae60;" onclick="addLaborExpense(${l.id})" title="خرچہ شامل کریں">💰</button>
+                <button class="action-btn" style="background: #16a085;" onclick="showLaborExpenseHistory(${l.id})" title="خرچہ کی تفصیل">🧾</button>
+                <button class="btn-edit icon-btn" onclick="editLabor(${l.id})" title="ترمیم">✏️</button>
+                <button class="action-btn" style="background: #c0392b;" onclick="showLaborProfile(${l.id})" title="مزدور پروفائل">👤</button>
+                <button class="btn-danger icon-btn" onclick="deleteLabor(${l.id})" title="ڈیلیٹ">🗑️</button>
             </td>
         </tr>
     `;
@@ -490,7 +493,7 @@ function showLaborProfile(id) {
                     <p style="padding: 20px;"><strong>بقایا رقم  :  </strong> ${baqaya.toLocaleString()} روپے</p>
         </div>
     `;
-    const whatsappBtn = l.mobile ? `<a href="https://wa.me/${l.mobile}?text=${encodeURIComponent(`سلام ${l.name}  بھائی یہ آپ کے کام کا ریکارڈ ہے۔   آپ کی کل مزدوری    ${l.rate * l.att} روہے ہے آب کو ${l.kharcha} روپے دیئے ہیں اور بقایا  ${baqaya}روپے رہ گئے ہیں`)}" target="_blank" class="swal2-styled swal2-default-outline" style="background: #25d366; color: white; border: none; margin-left: 10px;">💬 وٹس ایپ بھیجیں</a>` : '';
+    const whatsappBtn = l.mobile ? `<a href="https://wa.me/${l.mobile}?text=${encodeURIComponent(`سلام ${l.name} بھائی، یہ آپ کے کام کا ریکارڈ ہے۔ آپ کی کل مزدوری ${l.rate * l.att} روپے، اب تک آپ کو ${l.kharcha} روپے دیے گئے، اور بقایا ${baqaya} روپے ہے۔`)}" target="_blank" class="swal2-styled swal2-default-outline" style="background: #25d366; color: white; border: none; margin-left: 10px; padding: 4px 10px; border-radius: 8px;">💬</a>` : '';
     Swal.fire({
         title: `${l.name} مزدور کی تفصیل`,
         html: profileHtml,
@@ -504,7 +507,7 @@ function showLaborProfile(id) {
             // container.insertAdjacentHTML('beforeend', pdfBtn);
             // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('labor', ${l.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
             // container.insertAdjacentHTML('beforeend', imgBtn);
-            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">📤  تصویر بھیجیں</button>`;
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px; padding: 6px 12px; border-radius: 8px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">📤</button>`;
             container.insertAdjacentHTML('beforeend', waShareBtn);
         },
         customClass: { popup: 'swal2-popup' }
@@ -610,13 +613,13 @@ function updateMalikTable() {
         <td>${received.toLocaleString()}</td>
         <td style="color: ${balance >= 0 ? 'green' : 'red'}; font-weight:bold">${balance.toLocaleString()}</td>
         <td>
-            <button class="btn-deal" onclick="addDeal(${o.id})">ڈیل</button>
-            <button class="btn-deal-detail" onclick="showDealDetails(${o.id})">دیکھیں</button>
-            <button class="btn-receipt" onclick="receiveMoney(${o.id})">وصولی</button>
-            <button class="btn-history" onclick="showReceiptHistory(${o.id})">دیکھیں</button>
-            <button class="btn-edit" onclick="editOwner(${o.id})">ترمیم</button>
-            <button class="btn-detail" onclick="showOwnerDetails(${o.id})">تفصیل</button>
-            <button class="btn-danger" onclick="deleteOwner(${o.id})">ڈیلیٹ</button>
+            <button class="btn-deal" onclick="addDeal(${o.id})" title="نئی ڈیل">🤝</button>
+            <button class="btn-deal-detail" onclick="showDealDetails(${o.id})" title="ڈیل کی تفصیل">📈</button>
+            <button class="btn-receipt" onclick="receiveMoney(${o.id})" title="رقم وصول کریں">💸</button>
+            <button class="btn-history" onclick="showReceiptHistory(${o.id})" title="وصولی کی تاریخ">🧾</button>
+            <button class="btn-edit icon-btn" onclick="editOwner(${o.id})" title="ترمیم">✏️</button>
+            <button class="btn-detail" onclick="showOwnerDetails(${o.id})" title="مالک کی تفصیل">👤</button>
+            <button class="btn-danger icon-btn" onclick="deleteOwner(${o.id})" title="ڈیلیٹ">🗑️</button>
         </td>
     </tr>`;
     });
@@ -726,9 +729,9 @@ function showOwnerDetails(id) {
             // container.insertAdjacentHTML('beforeend', pdfBtn);
             // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('owner', ${o.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
             // container.insertAdjacentHTML('beforeend', imgBtn);
-            const waBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="sendOwnerWhatsApp(${o.id})">💬 وٹس ایپ بھیجیں</button>`;
+            const waBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="sendOwnerWhatsApp(${o.id})">💬</button>`;
             container.insertAdjacentHTML('beforeend', waBtn);
-            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">📤 تصویر بھیجیں</button>`;
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">📤</button>`;
             container.insertAdjacentHTML('beforeend', waShareBtn);
         },
         customClass: { popup: 'swal2-popup' }

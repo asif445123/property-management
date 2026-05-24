@@ -181,6 +181,54 @@ button:active {
     transform: scale(0.95);
 }
 
+.action-btn,
+.btn-deal,
+.btn-deal-detail,
+.btn-receipt,
+.btn-history,
+.btn-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+    font-size: 1rem;
+}
+
+.btn-edit.icon-btn,
+.btn-danger.icon-btn {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+}
+
+.action-btn:hover,
+.btn-deal:hover,
+.btn-deal-detail:hover,
+.btn-receipt:hover,
+.btn-history:hover,
+.btn-detail:hover {
+    transform: translateY(-1px);
+}
+
 .btn-add {
     font-family: 'Noto Nastaliq Urdu';
     background: var(--secondary);
@@ -199,7 +247,6 @@ button:active {
     color: white;
 }
 
-/* Malik (مالک) specific action buttons */
 .btn-deal { background: #8e44ad; color: white; }
 .btn-deal-detail { background: #2980b9; color: white; }
 .btn-receipt { background: #27ae60; color: white; }
