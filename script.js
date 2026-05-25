@@ -125,7 +125,7 @@ function getOwnerDealInfo(owner) {
 }
 
 function sendOTP() {
-    currentOTP = Math.floor(1000 + Math.random() * 9999).toString();///Change OTP for 4 digit
+    currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
 }
 
