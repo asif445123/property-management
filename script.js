@@ -507,7 +507,7 @@ function showLaborProfile(id) {
             // container.insertAdjacentHTML('beforeend', pdfBtn);
             // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('labor', ${l.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
             // container.insertAdjacentHTML('beforeend', imgBtn);
-            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px; padding: 6px 12px; border-radius: 8px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">📤</button>`;
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px; padding: 6px 12px; border-radius: 8px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">🖼️</button>`;
             container.insertAdjacentHTML('beforeend', waShareBtn);
         },
         customClass: { popup: 'swal2-popup' }
@@ -731,7 +731,7 @@ function showOwnerDetails(id) {
             // container.insertAdjacentHTML('beforeend', imgBtn);
             const waBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="sendOwnerWhatsApp(${o.id})">💬</button>`;
             container.insertAdjacentHTML('beforeend', waBtn);
-            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">📤</button>`;
+            const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">🖼️</button>`;
             container.insertAdjacentHTML('beforeend', waShareBtn);
         },
         customClass: { popup: 'swal2-popup' }
