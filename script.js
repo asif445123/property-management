@@ -373,15 +373,17 @@ function updateMazdoorTable() {
             <td>${l.att}</td>
             <td>${l.kharcha}</td>
             <td style="color: ${baqaya >= 0 ? 'green' : 'red'}; font-weight:bold">${baqaya}</td>
-            <td>
-                <button class="action-btn" style="background: #27ae60;" onclick="markAtt(${l.id})" title="حاضری لگائیں">✅</button>
-                <button class="action-btn" style="background: #8e44ad;" onclick="showAttendanceHistory(${l.id})" title="حاضری کی تاریخ">📅</button>
-                <button class="action-btn" style="background: #27ae60;" onclick="addLaborExpense(${l.id})" title="خرچہ شامل کریں">💰</button>
-                <button class="action-btn" style="background: #16a085;" onclick="showLaborExpenseHistory(${l.id})" title="خرچہ کی تفصیل">🧾</button>
-                <button class="btn-edit icon-btn" onclick="editLabor(${l.id})" title="ترمیم">✏️</button>
-                <button class="action-btn" style="background: #c0392b;" onclick="showLaborProfile(${l.id})" title="مزدور پروفائل">👤</button>
-                <button class="btn-danger icon-btn" onclick="deleteLabor(${l.id})" title="ڈیلیٹ">🗑️</button>
-            </td>
+           <td>
+    <div class="btn-group">
+        <button class="action-btn" style="background: #27ae60;" onclick="markAtt(${l.id})" title="حاضری لگائیں">✅</button>
+        <button class="action-btn" style="background: #8e44ad;" onclick="showAttendanceHistory(${l.id})" title="حاضری کی تاریخ">📅</button>
+        <button class="action-btn" style="background: #27ae60;" onclick="addLaborExpense(${l.id})" title="خرچہ شامل کریں">💰</button>
+        <button class="action-btn" style="background: #16a085;" onclick="showLaborExpenseHistory(${l.id})" title="خرچہ کی تفصیل">🧾</button>
+        <button class="btn-edit icon-btn" onclick="editLabor(${l.id})" title="ترمیم">✏️</button>
+        <button class="action-btn" style="background: #c0392b;" onclick="showLaborProfile(${l.id})" title="مزدور پروفائل">👤</button>
+        <button class="btn-danger icon-btn" onclick="deleteLabor(${l.id})" title="ڈیلیٹ">🗑️</button>
+    </div>
+</td>
         </tr>
     `;
     });
@@ -612,15 +614,17 @@ function updateMalikTable() {
         <td>${contract.toLocaleString()}</td>
         <td>${received.toLocaleString()}</td>
         <td style="color: ${balance >= 0 ? 'green' : 'red'}; font-weight:bold">${balance.toLocaleString()}</td>
-        <td>
-            <button class="btn-deal" onclick="addDeal(${o.id})" title="نئی ڈیل">🤝</button>
-            <button class="btn-deal-detail" onclick="showDealDetails(${o.id})" title="ڈیل کی تفصیل">📈</button>
-            <button class="btn-receipt" onclick="receiveMoney(${o.id})" title="رقم وصول کریں">💸</button>
-            <button class="btn-history" onclick="showReceiptHistory(${o.id})" title="وصولی کی تاریخ">🧾</button>
-            <button class="btn-edit icon-btn" onclick="editOwner(${o.id})" title="ترمیم">✏️</button>
-            <button class="btn-detail" onclick="showOwnerDetails(${o.id})" title="مالک کی تفصیل">👤</button>
-            <button class="btn-danger icon-btn" onclick="deleteOwner(${o.id})" title="ڈیلیٹ">🗑️</button>
-        </td>
+      <td>
+    <div class="btn-group">
+        <button class="btn-deal" onclick="addDeal(${o.id})" title="نئی ڈیل">🤝</button>
+        <button class="btn-deal-detail" onclick="showDealDetails(${o.id})" title="ڈیل کی تفصیل">📈</button>
+        <button class="btn-receipt" onclick="receiveMoney(${o.id})" title="رقم وصول کریں">💸</button>
+        <button class="btn-history" onclick="showReceiptHistory(${o.id})" title="وصولی کی تاریخ">🧾</button>
+        <button class="btn-edit icon-btn" onclick="editOwner(${o.id})" title="ترمیم">✏️</button>
+        <button class="btn-detail" onclick="showOwnerDetails(${o.id})" title="مالک کی تفصیل">👤</button>
+        <button class="btn-danger icon-btn" onclick="deleteOwner(${o.id})" title="ڈیلیٹ">🗑️</button>
+    </div>
+</td>
     </tr>`;
     });
     
