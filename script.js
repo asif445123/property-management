@@ -145,6 +145,7 @@ function checkLogin() {
         updateKharchaTable();
         updateSiteTable();
         updateSummary();
+        setDefaultDateInputs();
         document.getElementById('passCode').value = '';
         currentOTP = null;
         showToast('لاگ ان ہو گیا', 'success');
@@ -239,6 +240,14 @@ function saveData() {
     updateSiteTable();
     updateSummary();
     updateMalikSummary();
+}
+
+function setDefaultDateInputs() {
+    const today = new Date().toISOString().split('T')[0];
+    const ownerDate = document.getElementById('ownerDate');
+    const expenseDate = document.getElementById('kDate');
+    if (ownerDate) ownerDate.value = today;
+    if (expenseDate) expenseDate.value = today;
 }
 
 function addLabor() {
@@ -588,6 +597,7 @@ function addOwner() {
     document.getElementById('ownerAmount').value = '';
     document.getElementById('ownerDate').value = '';
     document.getElementById('ownerDesc').value = '';
+    setDefaultDateInputs();
 }
 
 function updateMalikTable() {
@@ -813,6 +823,7 @@ function addExpense() {
     document.getElementById('kAmount').value = '';
     document.getElementById('kDate').value = '';
     document.getElementById('kSiteSelect').value = '';
+    setDefaultDateInputs();
 }
 
 function updateKharchaTable() {
