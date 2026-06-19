@@ -129,6 +129,7 @@ function getOwnerDealInfo(owner) {
 //     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
 // }
 
+// For demo purposes, we will show a fixed OTP and prompt user to register in app to get real OTP
 function sendOTP() {
     // currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
     showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'ایپ رجسڑ کروائیں');
