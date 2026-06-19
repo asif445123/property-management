@@ -131,7 +131,7 @@ function getOwnerDealInfo(owner) {
 
 function sendOTP() {
     // currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
-    showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'او ٹی پی حاصل کریں');
+    showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'ایپ رجسڑ کروائیں');
 }
 
 function checkLogin() {
