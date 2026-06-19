@@ -124,9 +124,14 @@ function getOwnerDealInfo(owner) {
     };
 }
 
+// function sendOTP() {
+//     currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
+//     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
+// }
+
 function sendOTP() {
-    currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
-    showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
+    // currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
+    showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'او ٹی پی حاصل کریں');
 }
 
 function checkLogin() {
