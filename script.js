@@ -124,6 +124,7 @@ function getOwnerDealInfo(owner) {
     };
 }
 
+// Purchase OTP  then Use
 // function sendOTP() {
 //     currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
 //     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
