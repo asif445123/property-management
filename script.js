@@ -746,10 +746,6 @@ function showOwnerDetails(id) {
         confirmButtonText: 'ٹھیک ہے',
         didOpen: function(modal) {
             const container = modal.querySelector('.swal2-actions');
-            // const pdfBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#3498db;color:white;border:none;margin-left:10px;" onclick="downloadOwnerDetailsPDF(${o.id})">📄 PDF ڈاؤن لوڈ کریں</button>`;
-            // container.insertAdjacentHTML('beforeend', pdfBtn);
-            // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('owner', ${o.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
-            // container.insertAdjacentHTML('beforeend', imgBtn);
             const waBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#25d366;color:white;border:none;margin-left:10px;" onclick="sendOwnerWhatsApp(${o.id})">💬</button>`;
             container.insertAdjacentHTML('beforeend', waBtn);
             const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px;" onclick="shareDetailToWhatsApp('owner', ${o.id})">🖼️</button>`;
@@ -849,7 +845,8 @@ function updateKharchaTable() {
         <td>${e.name}</td>
         <td>${e.amount.toLocaleString()}</td>
         <td>
-            <button class="btn-danger" onclick="deleteExpense(${e.id})">ڈیلیٹ</button>
+            <button class="btn-danger icon-btn" onclick="deleteExpense(${e.id})">🗑️</button>
+            <button class="btn-edit icon-btn" onclick="editExpense(${e.id})">✏️</button>
         </td>
     </tr>`;
     });
@@ -860,6 +857,19 @@ async function deleteExpense(id) {
         expenses = expenses.filter(x => x.id !== id);
         saveData();
     }
+}
+
+async function editExpense(id) {
+    const e = expenses.find(x => x.id === id);
+    const edate = await showPrompt("تاریخ", 'date', e.date, 'تاریخ منتخب کریں');
+    const esite = await showPrompt("سائٹ", 'text', e.site, 'سائٹ درج کریں');
+    const ename = await showPrompt("آئٹم", 'text', e.name, 'آئٹم درج کریں');
+    const eamount = await showPrompt("رقم", 'number', e.amount, 'رقم درج کریں');
+    if (edate !== null && edate !== '') e.date = edate;
+    if (esite !== null && esite !== '') e.site = esite;
+    if (ename !== null && ename !== '') e.name = ename;
+    if (eamount !== null && eamount !== '' && !isNaN(eamount)) e.amount = parseFloat(eamount);
+    saveData();
 }
 
 // Filter functions
