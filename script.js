@@ -521,10 +521,7 @@ function showLaborProfile(id) {
             if (whatsappBtn) {
                 container.insertAdjacentHTML('beforeend', whatsappBtn);
             }
-            // const pdfBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#3498db;color:white;border:none;margin-left:10px;" onclick="downloadLaborDetailsPDF(${l.id})">📄 PDF ڈاؤن لوڈ کریں</button>`;
-            // container.insertAdjacentHTML('beforeend', pdfBtn);
-            // const imgBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#9b59b6;color:white;border:none;margin-left:10px;" onclick="downloadDetailAsImage('labor', ${l.id})">🖼️ تصویر ڈاؤن لوڈ</button>`;
-            // container.insertAdjacentHTML('beforeend', imgBtn);
+            
             const waShareBtn = `<button type="button" class="swal2-styled swal2-default-outline" style="background:#16a085;color:white;border:none;margin-left:10px; padding: 6px 12px; border-radius: 8px;" onclick="shareDetailToWhatsApp('labor', ${l.id})">🖼️</button>`;
             container.insertAdjacentHTML('beforeend', waShareBtn);
         },
@@ -861,16 +858,17 @@ async function deleteExpense(id) {
 
 async function editExpense(id) {
     const e = expenses.find(x => x.id === id);
-    const edate = await showPrompt("تاریخ", 'date', e.date, 'تاریخ منتخب کریں');
-    const esite = await showPrompt("سائٹ", 'text', e.site, 'سائٹ درج کریں');
-    const ename = await showPrompt("آئٹم", 'text', e.name, 'آئٹم درج کریں');
-    const eamount = await showPrompt("رقم", 'number', e.amount, 'رقم درج کریں');
-    if (edate !== null && edate !== '') e.date = edate;
-    if (esite !== null && esite !== '') e.site = esite;
-    if (ename !== null && ename !== '') e.name = ename;
-    if (eamount !== null && eamount !== '' && !isNaN(eamount)) e.amount = parseFloat(eamount);
+    const ndate = await showPrompt("تاریخ", 'date', e.date, 'تاریخ منتخب کریں');
+    const nsite = await showSitePrompt(e.site);
+    const nname = await showPrompt("آئٹم", 'text', e.name, 'آئٹم درج کریں');
+    const namount = await showPrompt("رقم", 'number', e.amount, 'رقم درج کریں');
+    if (ndate !== null && ndate !== '') e.date = ndate;
+    if (nsite !== null) e.site = nsite;
+    if (nname !== null && nname !== '') e.name = nname;
+    if (namount !== null && namount !== '' && !isNaN(namount)) e.amount = parseFloat(namount);
     saveData();
 }
+
 
 // Filter functions
 function filterBySite(section) {
