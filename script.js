@@ -125,16 +125,16 @@ function getOwnerDealInfo(owner) {
 }
 
 // Purchase OTP  then Use
-function sendOTP() {
-    currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
-    showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
-}
+// function sendOTP() {
+//     currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
+//     showToast("آپ کا نیا لاگ ان او ٹی پی ہے: " + currentOTP, 'success', 'او ٹی پی بھیج دیا گیا');
+// }
 
 // For demo purposes, we will show a fixed OTP and prompt user to register in app to get real OTP
-// function sendOTP() {
-//     // currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
-//     showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'ایپ رجسڑ کروائیں');
-// }
+function sendOTP() {
+    // currentOTP = Math.floor(1000 + Math.random() * 999).toString();///Change OTP for 4 digit
+    showToast("او ٹی پی حاصل کرنے کیلیئے ایپ رجسڑ کروائیں: " + currentOTP, 'success', 'ایپ رجسڑ کروائیں');
+}
 
 function checkLogin() {
     if (currentOTP === null) {
@@ -284,33 +284,9 @@ function addLabor() {
     document.getElementById('mSiteSelect').value = '';
 }
 
-function exportSectionToPDF(element, fileName) {
-    const opt = {
-        margin: 0.5,
-        filename: fileName,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    if (typeof html2pdf !== 'function' && typeof window.html2pdf === 'undefined') {
-        showToast('PDF جنریٹ کرنے کے لیے ضروری لائبریری لوڈ نہیں ہوئی۔ برائے مہربانی صفحہ ریفریش کریں۔', 'error');
-        console.error('exportSectionToPDF: html2pdf is not available');
-        return;
-    }
-    // html2pdf may be exposed as a global function or via window
-    const exporter = (typeof html2pdf === 'function') ? html2pdf : window.html2pdf;
-    exporter().set(opt).from(element).save();
-}
 
-function exportCurrentSectionPDF() {
-    let sectionId = 'mazdoorSection';
-    if (document.getElementById('btnMalik').classList.contains('active')) sectionId = 'malikSection';
-    if (document.getElementById('btnKharcha').classList.contains('active')) sectionId = 'kharchaSection';
-    if (document.getElementById('btnSite').classList.contains('active')) sectionId = 'siteSection';
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    exportSectionToPDF(section, `${sectionId}.pdf`);
-}
+
+
 
 function updateSiteTable() {
     const list = document.getElementById('siteList');
@@ -879,60 +855,6 @@ function filterBySite(section) {
     }
 }
 
-function downloadLaborDetailsPDF(laborId) {
-    const l = labors.find(x => x.id === laborId);
-    if (!l) return showToast('مزدور نہیں ملا', 'error');
-    const baqaya = (l.rate * l.att) - l.kharcha;
-    const profileHtml = `
-        <div style="text-align:right; direction:rtl;">
-            <h3 style="color: #2c3e50; margin-bottom: 15px;">${l.name}</h3>
-            <p style="padding: 20px;"><strong>مزدور کا نام  :  </strong> ${l.name}</p>
-            <p style="padding: 20px;"><strong>سائٹ کا نام  :  </strong> ${l.site || 'درج نہیں'}</p>
-            <p style="padding: 20px;"><strong>موبائل نمبر  :  </strong> ${l.mobile || 'درج نہیں'}</p>
-            <p style="padding: 20px;"><strong>روز کی دیہاڑی  :  </strong> ${l.rate} روپے</p>
-            <p style="padding: 20px;"><strong>کل حاضری  :  </strong> ${l.att} دن</p>
-            <p style="padding: 20px;"><strong>کل اجرت  :  </strong> ${(l.rate * l.att).toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>کل خرچہ  :  </strong> ${l.kharcha.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>بقایا رقم  :  </strong> ${baqaya.toLocaleString()} روپے</p>
-        </div>
-    `;
-    const temp = document.createElement('div');
-    temp.innerHTML = profileHtml;
-    document.body.appendChild(temp);
-    exportSectionToPDF(temp, `${l.name || 'mazdoor'}-تفصیل.pdf`);
-    setTimeout(() => document.body.removeChild(temp), 500);
-}
-
-function downloadOwnerDetailsPDF(ownerId) {
-    const o = owners.find(x => x.id === ownerId);
-    if (!o) return showToast('مالک نہیں ملا', 'error');
-    const baseContract = parseFloat(o.contractTotal || 0);
-    const dealInfo = getOwnerDealInfo(o);
-    const totalContract = baseContract + dealInfo.dealAmount;
-    const received = parseFloat(o.received || 0);
-    const balance = totalContract - received;
-    const detailHtml = `
-        <div style="text-align:right; direction:rtl;">
-            <h3 style="color: #2c3e50; margin-bottom: 15px;">${o.name}</h3>
-            <p style="padding: 20px;"><strong>سائٹ کا نام  :   </strong> ${o.site}</p>
-            <p style="padding: 20px;"><strong>مالک  کا نام  :   </strong> ${o.name}</p>
-            <p style="padding: 20px;"><strong>تاریخ  :   </strong> ${o.date}</p>
-            <p style="padding: 20px;"><strong>دن     :   </strong> ${o.day}</p>
-            <p style="padding: 20px;"><strong>پہلے کا ٹھیکہ  :   </strong> ${baseContract.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>کل نئی ڈیلز  :   </strong> ${dealInfo.dealCount}</p>
-            <p style="padding: 20px;"><strong>کل نئی ڈیلز کی رقم  :   </strong> ${dealInfo.dealAmount.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>ٹوٹل ٹھیکہ  :   </strong> ${totalContract.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>کل وصولی  :   </strong> ${received.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>بقایا  :   </strong> ${balance.toLocaleString()} روپے</p>
-            <p style="padding: 20px;"><strong>ڈیل کی تفصیل  :   </strong> ${o.desc || 'N/A'}</p>
-        </div>
-    `;
-    const temp = document.createElement('div');
-    temp.innerHTML = detailHtml;
-    document.body.appendChild(temp);
-    exportSectionToPDF(temp, `${o.name || 'malik'}-تفصیل.pdf`);
-    setTimeout(() => document.body.removeChild(temp), 500);
-}
 
 function downloadDetailAsImage(type, id) {
     let content = '';
